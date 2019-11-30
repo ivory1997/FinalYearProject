@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Nice"
+    tools:context=".RegisterActivity">
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:background="@drawable/box">
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newPassword"
+        android:layout_centerHorizontal="true"
+        android:text="Register" />
+
+    <EditText
+        android:id="@+id/newName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_alignStart="@+id/newPassword"
+        android:layout_alignLeft="@+id/newPassword"
+        android:layout_alignEnd="@+id/newPassword"
+        android:layout_alignRight="@+id/newPassword"
+        android:singleLine="true"
+        android:hint="Enter name"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/newEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newName"
+        android:singleLine="true"
+        android:layout_alignStart="@+id/newPassword"
+        android:layout_alignLeft="@+id/newPassword"
+        android:layout_alignEnd="@+id/newPassword"
+        android:layout_alignRight="@+id/newPassword"
+        android:hint="Enter Email"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/newPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newEmail"
+        android:layout_centerHorizontal="true"
+        android:singleLine="true"
+        android:ems="10"
+        android:hint="Enter Password"
+        android:inputType="textPassword"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/NiceWhite"
+        android:text="Register"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="50sp" />
+
+</RelativeLayout>
+
+</RelativeLayout>
