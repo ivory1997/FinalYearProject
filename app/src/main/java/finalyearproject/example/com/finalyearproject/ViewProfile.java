@@ -20,6 +20,8 @@ import java.util.ArrayList;
 public class ViewProfile extends AppCompatActivity {
     Button btnEdit, btnDelete;
     private String name, email;
+    ArrayList<String> countries = new ArrayList<>();
+    ArrayList<String> countryNames = new ArrayList<>();
     private TextView userName, welcomeMessage, nameView, emailView;
     private ListView navigationList2;
     private RelativeLayout profileBox;
@@ -35,6 +37,8 @@ public class ViewProfile extends AppCompatActivity {
         Intent receivedIntent2 = getIntent();
         name = receivedIntent2.getStringExtra("name");
         email = receivedIntent2.getStringExtra("email");
+        countries = receivedIntent2.getStringArrayListExtra("countries");
+        countryNames = receivedIntent2.getStringArrayListExtra("countryNames");
         nameView = (TextView) findViewById(R.id.namev);
         emailView = (TextView) findViewById(R.id.emailv);
         userName = (TextView) findViewById(R.id.userName);
@@ -44,7 +48,7 @@ public class ViewProfile extends AppCompatActivity {
 
         final ArrayList<String> listData2 = new ArrayList<>();
         listData2.add("My Map");
-        listData2.add("option 2");
+        listData2.add("Country List");
         listData2.add("option 3");
         listData2.add("option 4");
         navigationList2 = (ListView) findViewById(R.id.navigationList);
@@ -68,7 +72,15 @@ public class ViewProfile extends AppCompatActivity {
                         ConnectDB connectDB = new ConnectDB(ViewProfile.this);
                         connectDB.execute(task,email,name);
                         break;
-                    case "option 2": toastMessage("option 2");
+                    case "Country List":
+                        toastMessage("Country List");
+                        Intent CountryListIntent = new Intent(ViewProfile.this,CountryListActivity.class);
+                        CountryListIntent.putExtra("email",email);
+                        CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putStringArrayListExtra("countries", countries);
+                        CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryListIntent);
+                        break;
                     case "option 3": toastMessage("option 3");
                     case "option 4": toastMessage("option 4");
                 }
@@ -98,6 +110,8 @@ public class ViewProfile extends AppCompatActivity {
                 Intent editProfileIntent = new Intent(ViewProfile.this,EditActivity.class);
                 editProfileIntent.putExtra("name",name);
                 editProfileIntent.putExtra("email",email);
+                editProfileIntent.putStringArrayListExtra("countries", countries);
+                editProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(editProfileIntent);
 
 
@@ -110,6 +124,8 @@ public class ViewProfile extends AppCompatActivity {
                 Intent deleteProfileIntent = new Intent(ViewProfile.this,DeleteActivity.class);
                 deleteProfileIntent.putExtra("name",name);
                 deleteProfileIntent.putExtra("email",email);
+                deleteProfileIntent.putStringArrayListExtra("countries", countries);
+                deleteProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(deleteProfileIntent);
 
             }
@@ -120,6 +136,8 @@ public class ViewProfile extends AppCompatActivity {
                 Intent profilePicIntent = new Intent(ViewProfile.this,ProfilePicture.class);
                 profilePicIntent.putExtra("name",name);
                 profilePicIntent.putExtra("email",email);
+                profilePicIntent.putStringArrayListExtra("countries", countries);
+                profilePicIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(profilePicIntent);
 
             }

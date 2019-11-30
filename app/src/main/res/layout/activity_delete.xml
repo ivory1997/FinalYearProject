@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView1"
                 android:layout_centerHorizontal="true"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:text="Delete Profile" />
 
         </RelativeLayout>

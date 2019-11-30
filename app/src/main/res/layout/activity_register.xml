@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/newPassword"
         android:layout_centerHorizontal="true"
-        android:text="Register" />
+        android:text="Register"
+        style="@style/Widget.AppCompat.Button.Colored"/>
 
     <EditText
         android:id="@+id/newName"

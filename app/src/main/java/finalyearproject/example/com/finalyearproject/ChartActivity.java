@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -114,6 +115,8 @@ public class ChartActivity extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(ChartActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
+                viewProfileIntent.putStringArrayListExtra("countries", countries);
+                viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);
 
             }
@@ -169,7 +172,9 @@ public class ChartActivity extends AppCompatActivity {
         }
         webView.requestFocusFromTouch();
         webView.getSettings().setBuiltInZoomControls(true);
-
+        //webView.getSettings().setLoadWithOverviewMode(true);
+        //webView.getSettings().setUseWideViewPort(true);
+        webView.setInitialScale(180);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("file:///android_asset/geochart.html");
 

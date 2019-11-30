@@ -1,6 +1,8 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,6 +39,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +63,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
     private ListView navigationList;
     private RelativeLayout profileBox;
     private ImageView avatar;
+    private ImageView flag;
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
     List<Integer> newCountryList = new ArrayList<Integer>();
@@ -214,6 +220,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
                                     textView2.setText("Population: " + population);
                                     String capital = country.getString("capital");
                                     textView3.setText("Capital City: " + capital);
+                                    String flagUrl = country.getString("flag");
 
                                 }
 
@@ -261,7 +268,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
         avatar = (ImageView) findViewById(R.id.avatar);
         final ArrayList<String> listData = new ArrayList<>();
         listData.add("My Map");
-        listData.add("option 2");
+        listData.add("Country List");
         listData.add("option 3");
         listData.add("option 4");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -286,9 +293,15 @@ public class ViewCountryActivity extends AppCompatActivity implements
                         ConnectDB connectDB = new ConnectDB(ViewCountryActivity.this);
                         connectDB.execute(task,email,name);
                         break;
-                    case "option 2":
-                        toastMessage("option 2");
-                        break;
+                    case "Country List":
+                        toastMessage("Country List");
+                        Intent CountryListIntent = new Intent(ViewCountryActivity.this,CountryListActivity.class);
+                        CountryListIntent.putExtra("email",email);
+                        CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putStringArrayListExtra("countries", countries);
+                        CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryListIntent);
+                    break;
                     case "option 3":
                         toastMessage("option 3");
                         break;

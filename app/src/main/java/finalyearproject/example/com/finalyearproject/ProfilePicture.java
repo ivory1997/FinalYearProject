@@ -49,6 +49,8 @@ public class ProfilePicture extends AppCompatActivity {
     private RelativeLayout profileBox;
     private ImageView avatar;
     private ImageView profilePic;
+    ArrayList<String> countries = new ArrayList<>();
+    ArrayList<String> countryNames = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,8 @@ public class ProfilePicture extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
+        countries = receivedIntent.getStringArrayListExtra("countries");
+        countryNames = receivedIntent.getStringArrayListExtra("countryNames");
         btnGetImage = (Button) findViewById(R.id.btnGetImage);
         btnUploadImage = (Button) findViewById(R.id.btnUploadImage);
         navigationList = (ListView) findViewById(R.id.navigationList);
@@ -64,7 +68,7 @@ public class ProfilePicture extends AppCompatActivity {
         userName.setText(name);
         final ArrayList<String> listData = new ArrayList<>();
         listData.add("My Map");
-        listData.add("option 2");
+        listData.add("Country List");
         listData.add("option 3");
         listData.add("option 4");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
@@ -82,8 +86,14 @@ public class ProfilePicture extends AppCompatActivity {
                         ConnectDB connectDB = new ConnectDB(ProfilePicture.this);
                         connectDB.execute(task,email,name);
                         break;
-                    case "option 2":
-                        toastMessage("option 2");
+                    case "Country List":
+                        toastMessage("Country List");
+                        Intent CountryListIntent = new Intent(ProfilePicture.this,CountryListActivity.class);
+                        CountryListIntent.putExtra("email",email);
+                        CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putStringArrayListExtra("countries", countries);
+                        CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryListIntent);
                         break;
                     case "option 3":
                         toastMessage("option 3");
@@ -104,6 +114,8 @@ public class ProfilePicture extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(ProfilePicture.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
+                viewProfileIntent.putStringArrayListExtra("countries", countries);
+                viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);
 
             }

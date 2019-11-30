@@ -33,6 +33,8 @@ public class EditActivity extends AppCompatActivity {
     private RelativeLayout profileBox;
     private ImageView avatar;
     private ImageView profilePic;
+    ArrayList<String> countries = new ArrayList<>();
+    ArrayList<String> countryNames = new ArrayList<>();
 
     EditText updateEmail,updatePassword,updateName;
 
@@ -45,6 +47,8 @@ public class EditActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
+        countries = receivedIntent.getStringArrayListExtra("countries");
+        countryNames = receivedIntent.getStringArrayListExtra("countryNames");
         updateEmail = (EditText) findViewById(R.id.updateEmail);
         updatePassword = (EditText) findViewById(R.id.updatePassword);
         updateName = (EditText) findViewById(R.id.updateName);
@@ -61,7 +65,7 @@ public class EditActivity extends AppCompatActivity {
         userName.setText(name);
         final ArrayList<String> listData = new ArrayList<>();
         listData.add("My Map");
-        listData.add("option 2");
+        listData.add("Country List");
         listData.add("option 3");
         listData.add("option 4");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
@@ -79,8 +83,14 @@ public class EditActivity extends AppCompatActivity {
                         ConnectDB connectDB = new ConnectDB(EditActivity.this);
                         connectDB.execute(task,email,name);
                         break;
-                    case "option 2":
-                        toastMessage("option 2");
+                    case "Country List":
+                        toastMessage("Country List");
+                        Intent CountryListIntent = new Intent(EditActivity.this,CountryListActivity.class);
+                        CountryListIntent.putExtra("email",email);
+                        CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putStringArrayListExtra("countries", countries);
+                        CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryListIntent);
                         break;
                     case "option 3":
                         toastMessage("option 3");
@@ -101,7 +111,8 @@ public class EditActivity extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(EditActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
-                startActivity(viewProfileIntent);
+                viewProfileIntent.putStringArrayListExtra("countries", countries);
+                viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
 
             }
         });

@@ -30,6 +30,8 @@ public class DeleteActivity extends AppCompatActivity {
     private RelativeLayout profileBox;
     private ImageView avatar;
     private ImageView profilePic;
+    ArrayList<String> countries = new ArrayList<>();
+    ArrayList<String> countryNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class DeleteActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
+        countries = receivedIntent.getStringArrayListExtra("countries");
+        countryNames = receivedIntent.getStringArrayListExtra("countryNames");
         deletionMessage = (TextView) findViewById(R.id.textView1);
         deletionMessage.setText("Are you sure you want to delete your profile "+ email+"?");
 
@@ -48,7 +52,7 @@ public class DeleteActivity extends AppCompatActivity {
         userName.setText(name);
         final ArrayList<String> listData = new ArrayList<>();
         listData.add("My Map");
-        listData.add("option 2");
+        listData.add("Country List");
         listData.add("option 3");
         listData.add("option 4");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
@@ -66,8 +70,14 @@ public class DeleteActivity extends AppCompatActivity {
                         ConnectDB connectDB = new ConnectDB(DeleteActivity.this);
                         connectDB.execute(task,email,name);
                         break;
-                    case "option 2":
-                        toastMessage("option 2");
+                    case "Country List":
+                        toastMessage("Country List");
+                        Intent CountryListIntent = new Intent(DeleteActivity.this,CountryListActivity.class);
+                        CountryListIntent.putExtra("email",email);
+                        CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putStringArrayListExtra("countries", countries);
+                        CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryListIntent);
                         break;
                     case "option 3":
                         toastMessage("option 3");

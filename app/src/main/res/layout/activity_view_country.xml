@@ -23,6 +23,13 @@
             android:textSize="30sp" />
         <!-- android:background="@color/NiceWhite"/> -->
 
+        <ImageView
+            android:id="@+id/flag"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/textView1"
+            android:layout_marginTop="15dp" />
+
         <TextView
             android:id="@+id/textViewStatus"
             android:layout_width="wrap_content"
@@ -33,6 +40,7 @@
             android:textColor="#fff"
             android:textSize="16sp"
             android:textStyle="bold" />
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
@@ -90,6 +98,7 @@
             android:layout_marginTop="10dp"
             android:layout_below="@id/card"
             android:layout_toLeftOf="@id/middle"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:text="Change Colour" />
 
         <TextView
@@ -107,6 +116,7 @@
             android:layout_toRightOf="@id/middle"
             android:layout_below="@id/card"
             android:layout_marginTop="10dp"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:text="Back to Map" />
 
     </RelativeLayout>
