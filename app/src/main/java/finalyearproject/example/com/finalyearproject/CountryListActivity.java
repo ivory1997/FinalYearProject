@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-//
+
 public class CountryListActivity extends AppCompatActivity {
     private ListView navigationList;
     private RelativeLayout profileBox;
