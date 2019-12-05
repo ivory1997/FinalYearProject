@@ -97,7 +97,95 @@ public class ViewCountryActivity extends AppCompatActivity implements
             textViewStatus.setText("Visited");
             textViewStatus.setTextColor(Color.GREEN);
         }
+
+        if(selectedValue.equals("AX"))
+        {
+            selectedValue = "Åland Islands";
+        }
+        if(selectedValue.equals("XK"))
+        {
+            selectedValue = "Republic of Kosovo";
+        }
+        if(selectedValue.equals("CI"))
+        {
+            selectedValue = "Côte d'Ivoire";
+        }
+        if(selectedValue.equals("RE"))
+        {
+            selectedValue = "Réunion";
+        }
+        if(selectedValue.equals("BN"))
+        {
+            selectedValue = "Brunei Darussalam";
+        }
+        if(selectedValue.equals("TL"))
+        {
+            selectedValue = "Timor-Leste";
+        }
+        if(selectedValue.equals("FK"))
+        {
+            selectedValue = "Falkland Islands(Malvinas)";
+        }
+        if(selectedValue.equals("FK"))
+        {
+            selectedValue = "Falkland Islands(Malvinas)";
+        }
+        if(selectedValue.equals("SS"))
+        {
+            selectedValue = "South Sudan";
+        }
+        if(selectedValue.equals("CG"))
+        {
+            selectedValue = "Congo";
+        }
+        if(selectedValue.equals("CD"))
+        {
+            selectedValue = "Democratic republic of the Congo";
+        }
+
         textView1.setText(selectedValue);
+
+        if(selectedValue.equals("Åland Islands"))
+        {
+            selectedValue = "AX";
+        }
+        if(selectedValue.equals("Republic of Kosovo"))
+        {
+            selectedValue = "XK";
+        }
+        if(selectedValue.equals("Côte d'Ivoire"))
+        {
+            selectedValue = "CI";
+        }
+        if(selectedValue.equals("Réunion"))
+        {
+            selectedValue = "RE";
+        }
+        if(selectedValue.equals("Brunei Darussalam"))
+        {
+            selectedValue = "BN";
+        }
+        if(selectedValue.equals("Timor-Leste"))
+        {
+            selectedValue = "TL";
+        }
+        if(selectedValue.equals("Falkland Islands(Malvinas)"))
+        {
+            selectedValue = "FK";
+        }
+        if(selectedValue.equals("South Sudan"))
+        {
+            selectedValue = "SS";
+        }
+        if(selectedValue.equals("Congo"))
+        {
+            selectedValue = "CG";
+        }
+        if(selectedValue.equals("Democratic republic of the Congo"))
+        {
+            selectedValue = "CD";
+        }
+
         userName.setText(name);
 
         btnChangeColour = (Button) findViewById(R.id.btnChangeColour);
@@ -199,6 +287,8 @@ public class ViewCountryActivity extends AppCompatActivity implements
                                     String[] coordinates = latlng.split(",");
                                     String lat = coordinates[0].substring(1);
                                     String lon = coordinates[1].replace((coordinates[1].substring(coordinates[1].length() - 1)), "");
+                                    lon = lon.split("\\.", 2)[0];
+                                    lat = lat.split("\\.", 2)[0];
                                     //String latitude = latlng.substring(1, latlng.indexOf(","));
                                     //latitude.trim();
                                     double latitude1 = Double.valueOf(lat);
@@ -255,6 +345,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
         {
             selectedValue = "Russia";
         }
+
         if(selectedValue.equals("NE"))
         {
             selectedValue = "Niger";

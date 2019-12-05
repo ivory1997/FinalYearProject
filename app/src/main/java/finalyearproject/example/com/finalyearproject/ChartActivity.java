@@ -148,12 +148,7 @@ public class ChartActivity extends AppCompatActivity {
         num3 = 2;
         num4 = 4;
         num5 = 5;
-        //String texto = "[{countryName: "+countryNames.get(0)+", countryValue: "+newCountryList.get(0)+"},";
         texto = "[{\"countryName\":"+"\""+countryNames.get(0)+"\""+", \"countryValue\":"+newCountryList.get(0)+"}";
-        //texto1 = "";
-        //texto = texto + "{countryName: "+countryNames.get(1)+", countryValue: "+newCountryList.get(1)+"},";
-        //StringBuilder stringBuilder = new StringBuilder();
-        //stringBuilder.append("[{countryName: "+countryNames.get(0)+", countryValue: "+newCountryList.get(0)+"},");
         for(int i=1;i<newCountryList.size();i++)
         {
 
@@ -161,8 +156,6 @@ public class ChartActivity extends AppCompatActivity {
            // stringBuilder.append("{countryName: "+countryNames.get(i)+", countryValue: "+newCountryList.get(i)+"}");
         }
         texto = texto + "]";
-        //stringBuilder.append("]");
-        //String texto = stringBuilder.toString();
         Log.e("texto", texto+"");
         Log.e("texto", newCountryList.size()+"");
         webView = (WebView)findViewById(R.id.web);

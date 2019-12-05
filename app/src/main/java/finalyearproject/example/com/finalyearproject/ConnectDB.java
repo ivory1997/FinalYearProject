@@ -68,12 +68,6 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
         String urlEdit  = "https://c16307271.000webhostapp.com/edit.php";
         String urlCountries  = "https://c16307271.000webhostapp.com/getCountries.php";
         String urlUpdateCountries  = "https://c16307271.000webhostapp.com/updateCountries.php";
-        //String serverURL = "192.168.1.23";
-        //String serverURL = line1;
-        //String urlRegistration = "http://"+serverURL+"/webD/final_year_project/register.php";
-        //String urlLogin  = "http://"+serverURL+"/webD/final_year_project/login.php";
-        //String urlDelete  = "http://"+serverURL+"/webD/final_year_project/delete.php";
-        //String urlEdit  = "http://"+serverURL+"/webD/final_year_project/edit.php";
         String task = params[0];
 
         if(task.equals("register")){
@@ -366,20 +360,11 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
 
 
             if(test.contains("true")){
-                //editor.putString("Ireland",countries[0]);
-                //editor.commit();
-                //editor.putString("Madagascar",countries[1]);
-                //editor.commit();
-
                 Intent ChartIntent = new Intent(context,ChartActivity.class);
                 ChartIntent.putExtra("email",email);
                 ChartIntent.putExtra("name",name);
-                //ChartIntent.putExtra("countries",countries);
-                //ChartIntent.putExtra("countriesLength",countries.length);
                 ChartIntent.putStringArrayListExtra("countries", countries);
                 ChartIntent.putStringArrayListExtra("countryNames", countryNames);
-
-
                 context.startActivity(ChartIntent);
             }
 
@@ -387,8 +372,6 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
         }
         else if(flag.equals("login")){
 
-            //alertDialog.setMessage(result);
-            //alertDialog.show();
             String test = "false";
             String name = "";
             String email = "";
@@ -419,15 +402,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
 
 
         }
-/*
-        else{
-            Intent BacktoLogin = new Intent(context,LoginActivity.class);
-            context.startActivity(BacktoLogin);
-            //Toast.makeText(context,"error2",Toast.LENGTH_LONG).show();
-            //display("Login Failed...","Something weird happened :(.");
-        }
 
- */
 
 
     }
