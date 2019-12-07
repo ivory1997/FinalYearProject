@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+//Author: Mark Ivory
+//Student Number: C16307271
+//Personal World Travel Map Application
+
 public class MainActivity extends AppCompatActivity {
 
     Button RegisterButton;
