@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
