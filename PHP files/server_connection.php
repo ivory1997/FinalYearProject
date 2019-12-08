@@ -3,8 +3,7 @@
 $servername = "localhost";
 $username = "id11003303_c16307271";
 $dbname = "id11003303_finalyearproject2";
-//password not revealed in this repository
-$password = "";
+$password = "jesuschrist5624yes";
 //Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 //Check connection
