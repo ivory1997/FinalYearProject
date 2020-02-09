@@ -49,7 +49,7 @@ public class ViewProfile extends AppCompatActivity {
         final ArrayList<String> listData2 = new ArrayList<>();
         listData2.add("My Map");
         listData2.add("Country List");
-        listData2.add("option 3");
+        listData2.add("Friends List");
         listData2.add("option 4");
         navigationList2 = (ListView) findViewById(R.id.navigationList);
         ListAdapter adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData2);
@@ -81,7 +81,13 @@ public class ViewProfile extends AppCompatActivity {
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
                         break;
-                    case "option 3": toastMessage("option 3");
+                    case "Friends List":
+                        toastMessage("Friends List");
+                        task = "friends";
+                        ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(ViewProfile.this);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        connectDBPassArray.execute(AsyncTaskParams);
+                        break;
                     case "option 4": toastMessage("option 4");
                 }
 

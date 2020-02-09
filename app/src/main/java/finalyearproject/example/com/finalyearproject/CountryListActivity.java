@@ -49,7 +49,7 @@ public class CountryListActivity extends AppCompatActivity {
         userName.setText(name);
         listData.add("My Map");
         listData.add("Country List");
-        listData.add("option 3");
+        listData.add("Friends List");
         listData.add("option 4");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         navigationList.setAdapter(adapter);
@@ -72,8 +72,12 @@ public class CountryListActivity extends AppCompatActivity {
                         finish();
                         startActivity(listIntent);
                         break;
-                    case "option 3":
-                        toastMessage("option 3");
+                    case "Friends List":
+                        toastMessage("Friends List");
+                        task = "friends";
+                        ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(CountryListActivity.this);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "option 4":
                         toastMessage("option 3");

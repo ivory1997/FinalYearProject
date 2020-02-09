@@ -68,6 +68,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
         String urlEdit  = "https://c16307271.000webhostapp.com/edit.php";
         String urlCountries  = "https://c16307271.000webhostapp.com/getCountries.php";
         String urlUpdateCountries  = "https://c16307271.000webhostapp.com/updateCountries.php";
+        String urlFriends  = "https://c16307271.000webhostapp.com/getFriends.php";
         String task = params[0];
 
         if(task.equals("register")){
@@ -255,6 +256,42 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
 
         }
         //test countries update end
+        if(task.equals("friends")) {
+            try {
+                String email = params[1];
+                String name = params[2];
+                URL url = new URL(urlFriends);
+                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String post_data = URLEncoder.encode("identifier_loginEmail","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_loginName","UTF-8")+"="+URLEncoder.encode(name,"UTF-8");
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+                String result="";
+                String line="";
+                while((line = bufferedReader.readLine())!= null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                editor.putString("flag","friends");
+                editor.commit();
+                return result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         if(task.equals("edit")){
             String oldEmail = params[1];
             String updatedEmail = params[2];
@@ -368,6 +405,43 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 context.startActivity(ChartIntent);
             }
 
+
+        }
+        else if(flag.equals("friends"))
+        {
+            String test = "false";
+            String email = "";
+            String name = "";
+
+            String[] serverResponse = result.split("[,]");
+            //String[] countries = new String[serverResponse.length];
+            ArrayList<String> friends = new ArrayList<>();
+
+            test = serverResponse[0];
+            name  = serverResponse[1];
+            Log.e("server response 0", serverResponse[0]+"");
+            Log.e("server response 1", serverResponse[1]+"");
+            Log.e("server response 2", serverResponse[2]+"");
+            Log.e("server response 3", serverResponse[3]+"");
+
+            for(int i = 1; i < serverResponse.length; i+=2)
+            {
+                friends.add(serverResponse[i]);
+
+            }
+
+/*
+            if(test.contains("true")){
+
+                Intent FriendListIntent = new Intent(context,FriendsListActivity.class);
+                FriendListIntent.putExtra("email",email);
+                FriendListIntent.putExtra("name",name);
+                FriendListIntent.putStringArrayListExtra("friends", friends);
+                //FriendListIntent.putStringArrayListExtra("countries", countries);
+                //FriendListIntent.putStringArrayListExtra("countryNames", countryNames);
+                context.startActivity(FriendListIntent);
+            }
+*/
 
         }
         else if(flag.equals("login")){

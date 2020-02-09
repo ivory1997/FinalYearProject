@@ -360,7 +360,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
         final ArrayList<String> listData = new ArrayList<>();
         listData.add("My Map");
         listData.add("Country List");
-        listData.add("option 3");
+        listData.add("Friends List");
         listData.add("option 4");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -393,8 +393,12 @@ public class ViewCountryActivity extends AppCompatActivity implements
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
                     break;
-                    case "option 3":
-                        toastMessage("option 3");
+                    case "Friends List":
+                        toastMessage("Friends List");
+                        task = "friends";
+                        ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(ViewCountryActivity.this);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "option 4":
                         toastMessage("option 3");
