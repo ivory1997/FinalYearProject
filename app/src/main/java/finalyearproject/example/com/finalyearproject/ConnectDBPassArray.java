@@ -67,6 +67,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
 
         String urlFriends  = "https://c16307271.000webhostapp.com/getFriends.php";
         String urlAddFriends  = "https://c16307271.000webhostapp.com/getUserNames.php";
+        String urlCountryRecommender = "https://c16307271.000webhostapp.com/countryRecommender.php";
 
         String task = params[0].task;
         countries = params[0].countries;
@@ -153,7 +154,44 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
                 e.printStackTrace();
             }
         }
-
+        if(task.equals("recommend")) {
+            try {
+                //String email = params[0].email;
+                //String name = params[0].name;
+                Log.e("email test", email + "");
+                Log.e("name test", name + "");
+                URL url = new URL(urlCountryRecommender);
+                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String post_data = URLEncoder.encode("identifier_loginEmail","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_loginName","UTF-8")+"="+URLEncoder.encode(name,"UTF-8");
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+                String result="";
+                String line="";
+                while((line = bufferedReader.readLine())!= null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                editor.putString("flag","recommend");
+                editor.commit();
+                return result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
 
 
@@ -243,6 +281,38 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
             AddFriendsIntent.putStringArrayListExtra("countries", countries);
             AddFriendsIntent.putStringArrayListExtra("countryNames", countryNames);
             context.startActivity(AddFriendsIntent);
+
+
+
+        }
+        else if(flag.equals("recommend"))
+        {
+            String test = "false";
+            //String email = "";
+            //String name = "";
+
+            String[] serverResponse = result.split("[,]");
+            //String[] countries = new String[serverResponse.length];
+            ArrayList<String> friends = new ArrayList<>();
+
+            test = serverResponse[0];
+            //name  = serverResponse[1];
+            Log.e("Recommender 0", serverResponse[0]+"");
+            Log.e("Recommender 1", serverResponse[1]+"");
+            //Log.e("server response 2", serverResponse[2]+"");
+            //Log.e("server response 3", serverResponse[3]+"");
+            String recommendedCountry = serverResponse[1];
+
+            Intent CountryRecommenderIntent = new Intent(context,CountryRecommenderActivity.class);
+            CountryRecommenderIntent.putExtra("email",email);
+            CountryRecommenderIntent.putExtra("name",name);
+            CountryRecommenderIntent.putExtra("recommendedCountry",recommendedCountry);
+            CountryRecommenderIntent.putStringArrayListExtra("friends", friends);
+            CountryRecommenderIntent.putStringArrayListExtra("countries", countries);
+            CountryRecommenderIntent.putStringArrayListExtra("countryNames", countryNames);
+            context.startActivity(CountryRecommenderIntent);
+
+
 
 
 

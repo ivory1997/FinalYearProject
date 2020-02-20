@@ -50,7 +50,7 @@ public class ViewProfile extends AppCompatActivity {
         listData2.add("My Map");
         listData2.add("Country List");
         listData2.add("Friends List");
-        listData2.add("option 4");
+        listData2.add("Random Country Picker");
         navigationList2 = (ListView) findViewById(R.id.navigationList);
         ListAdapter adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData2);
         navigationList2.setAdapter(adapter2);
@@ -88,7 +88,15 @@ public class ViewProfile extends AppCompatActivity {
                         AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
-                    case "option 4": toastMessage("option 4");
+                    case "Random Country Picker":
+                        toastMessage("Random Country Picker");
+                        Intent RandomCountryIntent = new Intent(ViewProfile.this,RandomCountry.class);
+                        RandomCountryIntent.putExtra("email",email);
+                        RandomCountryIntent.putExtra("name",name);
+                        RandomCountryIntent.putStringArrayListExtra("countries", countries);
+                        RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(RandomCountryIntent);
+                        break;
                 }
 
 

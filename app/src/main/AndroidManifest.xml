@@ -26,7 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddFriendsActivity"></activity>
+        <activity android:name=".CountryRecommenderActivity"></activity>
+        <activity android:name=".RandomCountry" />
+        <activity android:name=".AddFriendsActivity" />
         <activity android:name=".FriendsListActivity" />
         <activity android:name=".CountryListActivity" />
         <activity android:name=".ViewCountryActivity" />
