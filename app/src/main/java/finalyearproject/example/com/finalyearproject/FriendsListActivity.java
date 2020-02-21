@@ -1,9 +1,12 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +29,8 @@ public class FriendsListActivity extends AppCompatActivity {
     private TextView userName;
     String email;
     String name;
+    String profilePicString;
+    Bitmap profilePicBitmap;
     String countriesLength;
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
@@ -47,6 +52,10 @@ public class FriendsListActivity extends AppCompatActivity {
         Log.e("country values", countries.get(0) + "");
 
         avatar = (ImageView) findViewById(R.id.avatar);
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        avatar.setImageBitmap(profilePicBitmap);
         navigationList = (ListView) findViewById(R.id.navigationList);
         final ArrayList<String> listData = new ArrayList<>();
         userName = (TextView) findViewById(R.id.userName);
@@ -67,14 +76,17 @@ public class FriendsListActivity extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
+                        profilePicString = receivedIntent.getStringExtra("profilePicString");
                         ConnectDB connectDB = new ConnectDB(FriendsListActivity.this);
-                        connectDB.execute(task,email,name);
+                        connectDB.execute(task,email,name,profilePicString);
                         break;
                     case "Country List":
                         toastMessage("Country List");
                         Intent CountryListIntent = new Intent(FriendsListActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putExtra("profilePicString",profilePicString);
+
                         //ChartIntent.putExtra("countries",countries);
                         //ChartIntent.putExtra("countriesLength",countries.length);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
@@ -92,6 +104,7 @@ public class FriendsListActivity extends AppCompatActivity {
                         Intent RandomCountryIntent = new Intent(FriendsListActivity.this,RandomCountry.class);
                         RandomCountryIntent.putExtra("email",email);
                         RandomCountryIntent.putExtra("name",name);
+                        RandomCountryIntent.putExtra("profilePicString",profilePicString);
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
                         RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(RandomCountryIntent);
@@ -144,6 +157,7 @@ public class FriendsListActivity extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(FriendsListActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
+                viewProfileIntent.putExtra("profilePicString", profilePicString);
                 viewProfileIntent.putStringArrayListExtra("countries", countries);
                 viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);
@@ -157,7 +171,7 @@ public class FriendsListActivity extends AppCompatActivity {
                 Intent addFriendsIntent = new Intent(FriendsListActivity.this, AddFriendsActivity.class);
                 String task = "addFriends";
                 ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(FriendsListActivity.this);
-                AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames,friendListData);
+                AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames,friendListData);
                 connectDBPassArray.execute(AsyncTaskParams);
                 //addFriendsIntent.putExtra("name", name);
                 //addFriendsIntent.putExtra("email", email);

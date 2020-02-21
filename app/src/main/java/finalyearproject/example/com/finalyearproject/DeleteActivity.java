@@ -1,8 +1,11 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,12 +27,15 @@ public class DeleteActivity extends AppCompatActivity {
     Button btnDelete;
     private String name;
     private String email;
+    String profilePicString;
+    Bitmap profilePicBitmap;
     TextView deletionMessage;
     private TextView userName;
     private ListView navigationList;
     private RelativeLayout profileBox;
     private ImageView avatar;
     private ImageView profilePic;
+
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
 
@@ -48,6 +54,11 @@ public class DeleteActivity extends AppCompatActivity {
 
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        avatar.setImageBitmap(profilePicBitmap);
+
         userName = (TextView) findViewById(R.id.userName);
         userName.setText(name);
         final ArrayList<String> listData = new ArrayList<>();
@@ -83,7 +94,7 @@ public class DeleteActivity extends AppCompatActivity {
                         toastMessage("Friends List");
                         task = "friends";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(DeleteActivity.this);
-                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":
@@ -108,6 +119,9 @@ public class DeleteActivity extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(DeleteActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
+                viewProfileIntent.putExtra("profilePicString", profilePicString);
+                viewProfileIntent.putStringArrayListExtra("countries", countries);
+                viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);
 
             }

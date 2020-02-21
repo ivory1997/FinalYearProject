@@ -1,8 +1,12 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +24,9 @@ import java.util.ArrayList;
 public class ViewProfile extends AppCompatActivity {
     Button btnEdit, btnDelete;
     private String name, email;
+    private ImageView avatar;
+    String profilePicString;
+    Bitmap profilePicBitmap;
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
     private TextView userName, welcomeMessage, nameView, emailView;
@@ -46,6 +53,14 @@ public class ViewProfile extends AppCompatActivity {
         nameView.setText("Name: " + name);
         emailView.setText("Email: " + email);
 
+
+        profilePicString = receivedIntent2.getStringExtra("profilePicString");
+        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        Log.e("pictureString4", profilePicString + "");
+        avatar = (ImageView) findViewById(R.id.avatar);
+        avatar.setImageBitmap(profilePicBitmap);
+        profilePic.setImageBitmap(profilePicBitmap);
         final ArrayList<String> listData2 = new ArrayList<>();
         listData2.add("My Map");
         listData2.add("Country List");
@@ -65,18 +80,20 @@ public class ViewProfile extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
+                        profilePicString = receivedIntent.getStringExtra("profilePicString");
                         //countriesLength = receivedIntent.getStringExtra("countriesLength");
                         //int countriesLengthInt = Integer.parseInt(countriesLength);
                         //String[] countries = new String[countriesLengthInt];
                         //countries = receivedIntent.getStringExtra("countries");
                         ConnectDB connectDB = new ConnectDB(ViewProfile.this);
-                        connectDB.execute(task,email,name);
+                        connectDB.execute(task,email,name,profilePicString);
                         break;
                     case "Country List":
                         toastMessage("Country List");
                         Intent CountryListIntent = new Intent(ViewProfile.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putExtra("profilePicString", profilePicString);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
@@ -85,7 +102,7 @@ public class ViewProfile extends AppCompatActivity {
                         toastMessage("Friends List");
                         task = "friends";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(ViewProfile.this);
-                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":
@@ -93,6 +110,7 @@ public class ViewProfile extends AppCompatActivity {
                         Intent RandomCountryIntent = new Intent(ViewProfile.this,RandomCountry.class);
                         RandomCountryIntent.putExtra("email",email);
                         RandomCountryIntent.putExtra("name",name);
+                        RandomCountryIntent.putExtra("profilePicString", profilePicString);
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
                         RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(RandomCountryIntent);
@@ -124,6 +142,7 @@ public class ViewProfile extends AppCompatActivity {
                 Intent editProfileIntent = new Intent(ViewProfile.this,EditActivity.class);
                 editProfileIntent.putExtra("name",name);
                 editProfileIntent.putExtra("email",email);
+                editProfileIntent.putExtra("profilePicString", profilePicString);
                 editProfileIntent.putStringArrayListExtra("countries", countries);
                 editProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(editProfileIntent);
@@ -138,6 +157,7 @@ public class ViewProfile extends AppCompatActivity {
                 Intent deleteProfileIntent = new Intent(ViewProfile.this,DeleteActivity.class);
                 deleteProfileIntent.putExtra("name",name);
                 deleteProfileIntent.putExtra("email",email);
+                deleteProfileIntent.putExtra("profilePicString", profilePicString);
                 deleteProfileIntent.putStringArrayListExtra("countries", countries);
                 deleteProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(deleteProfileIntent);
@@ -150,6 +170,7 @@ public class ViewProfile extends AppCompatActivity {
                 Intent profilePicIntent = new Intent(ViewProfile.this,ProfilePicture.class);
                 profilePicIntent.putExtra("name",name);
                 profilePicIntent.putExtra("email",email);
+                profilePicIntent.putExtra("profilePicString", profilePicString);
                 profilePicIntent.putStringArrayListExtra("countries", countries);
                 profilePicIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(profilePicIntent);

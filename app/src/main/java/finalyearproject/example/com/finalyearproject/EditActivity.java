@@ -1,9 +1,12 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +28,8 @@ public class EditActivity extends AppCompatActivity {
     Button btnEdit;
     private String name;
     private String email;
+    String profilePicString;
+    Bitmap profilePicBitmap;
     private String updateEmail2;
     private String updatePassword2;
     private String updateName2;
@@ -61,6 +66,10 @@ public class EditActivity extends AppCompatActivity {
         updateName2 = updateName.getText().toString();
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        avatar.setImageBitmap(profilePicBitmap);
         userName = (TextView) findViewById(R.id.userName);
         userName.setText(name);
         final ArrayList<String> listData = new ArrayList<>();
@@ -96,7 +105,7 @@ public class EditActivity extends AppCompatActivity {
                         toastMessage("Friends List");
                         task = "friends";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(EditActivity.this);
-                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":
@@ -121,9 +130,10 @@ public class EditActivity extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(EditActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
+                viewProfileIntent.putExtra("profilePicString", profilePicString);
                 viewProfileIntent.putStringArrayListExtra("countries", countries);
                 viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
-
+                startActivity(viewProfileIntent);
             }
         });
 

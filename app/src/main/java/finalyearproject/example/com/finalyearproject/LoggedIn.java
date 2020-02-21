@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class LoggedIn extends AppCompatActivity {
     String name;
     String email;
-
+    String profilePicString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -19,11 +19,12 @@ public class LoggedIn extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
         //countriesLength = receivedIntent.getStringExtra("countriesLength");
         //int countriesLengthInt = Integer.parseInt(countriesLength);
         //String[] countries = new String[countriesLengthInt];
         //countries = receivedIntent.getStringExtra("countries");
         ConnectDB connectDB = new ConnectDB(LoggedIn.this);
-        connectDB.execute(task,email,name);
+        connectDB.execute(task,email,name,profilePicString);
     }
 }

@@ -1,9 +1,12 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +29,9 @@ public class AddFriendsActivity extends AppCompatActivity {
     private TextView userName;
     String email;
     String name;
+    String profilePicString;
+    Bitmap profilePicBitmap;
+
     String countriesLength;
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
@@ -50,6 +56,10 @@ public class AddFriendsActivity extends AppCompatActivity {
         Log.e("username 1", userListData.get(0) + "");
         Log.e("username 2", userListData.get(1) + "");
         avatar = (ImageView) findViewById(R.id.avatar);
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        avatar.setImageBitmap(profilePicBitmap);
         navigationList = (ListView) findViewById(R.id.navigationList);
         final ArrayList<String> listData = new ArrayList<>();
         userName = (TextView) findViewById(R.id.userName);
@@ -57,7 +67,7 @@ public class AddFriendsActivity extends AppCompatActivity {
         listData.add("My Map");
         listData.add("Country List");
         listData.add("Friends List");
-        listData.add("option 4");
+        listData.add("Random Country Picker");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         navigationList.setAdapter(adapter);
         navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -70,14 +80,17 @@ public class AddFriendsActivity extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
+                        profilePicString = receivedIntent.getStringExtra("profilePicString");
                         ConnectDB connectDB = new ConnectDB(AddFriendsActivity.this);
-                        connectDB.execute(task,email,name);
+                        connectDB.execute(task,email,name,profilePicString);
                         break;
                     case "Country List":
                         toastMessage("Country List");
                         Intent CountryListIntent = new Intent(AddFriendsActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putExtra("profilePicString",profilePicString);
+
                         //ChartIntent.putExtra("countries",countries);
                         //ChartIntent.putExtra("countriesLength",countries.length);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
@@ -88,11 +101,18 @@ public class AddFriendsActivity extends AppCompatActivity {
                         toastMessage("Friends List");
                         task = "friends";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(AddFriendsActivity.this);
-                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
-                    case "option 4":
-                        toastMessage("option 3");
+                    case "Random Country Picker":
+                        toastMessage("Random Country Picker");
+                        Intent RandomCountryIntent = new Intent(AddFriendsActivity.this,RandomCountry.class);
+                        RandomCountryIntent.putExtra("email",email);
+                        RandomCountryIntent.putExtra("name",name);
+                        RandomCountryIntent.putExtra("profilePicString", profilePicString);
+                        RandomCountryIntent.putStringArrayListExtra("countries", countries);
+                        RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(RandomCountryIntent);
                         break;
                 }
 

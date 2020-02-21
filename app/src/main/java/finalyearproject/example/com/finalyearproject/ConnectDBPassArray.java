@@ -50,6 +50,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
     private String line1;
     String email;
     String name;
+    String profilePicString;
     ArrayList<String> friends = new ArrayList<>();
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
@@ -68,6 +69,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
         String urlFriends  = "https://c16307271.000webhostapp.com/getFriends.php";
         String urlAddFriends  = "https://c16307271.000webhostapp.com/getUserNames.php";
         String urlCountryRecommender = "https://c16307271.000webhostapp.com/countryRecommender.php";
+        String urlProfilePic  = "https://c16307271.000webhostapp.com/profilePic.php";
 
         String task = params[0].task;
         countries = params[0].countries;
@@ -75,6 +77,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
         friends = params[0].friends;
         email = params[0].email;
         name = params[0].name;
+        String profilePicString = params[0].profilePicString;
         if(task.equals("friends")) {
             try {
                 //String email = params[0].email;
@@ -97,6 +100,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
                 InputStream inputStream = httpURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
                 String result="";
+                result += profilePicString + ",";
                 String line="";
                 while((line = bufferedReader.readLine())!= null) {
                     result += line;
@@ -136,6 +140,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
                 InputStream inputStream = httpURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
                 String result="";
+                result += profilePicString + ",";
                 String line="";
                 while((line = bufferedReader.readLine())!= null) {
                     result += line;
@@ -192,7 +197,49 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
                 e.printStackTrace();
             }
         }
-
+        if(task.equals("profilePic")) {
+            try {
+                //String email = params[0].email;
+                //String name = params[0].name;
+                Log.e("email test2", email + "");
+                Log.e("name test2", name + "");
+                URL url = new URL(urlProfilePic);
+                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String post_data = URLEncoder.encode("identifier_loginEmail","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_loginName","UTF-8")+"="+URLEncoder.encode(name,"UTF-8")+"&"
+                        +URLEncoder.encode("profile_picture","UTF-8")+"="+URLEncoder.encode(profilePicString,"UTF-8");
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+                String result="";
+                result += profilePicString + ",";
+                String line="";
+                while((line = bufferedReader.readLine())!= null) {
+                    result += line;
+                }
+                Log.e("resultTest", result + "");
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                editor.putString("flag","profilePic");
+                editor.commit();
+                Log.e("email test3", email + "");
+                Log.e("name test3", name + "");
+                return result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
 
 
@@ -217,12 +264,12 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
             String test = "false";
             //String email = "";
             //String name = "";
-
+            String profilePicString = "";
             String[] serverResponse = result.split("[,]");
             //String[] countries = new String[serverResponse.length];
             ArrayList<String> friends = new ArrayList<>();
-
-            test = serverResponse[0];
+            profilePicString = serverResponse[0];
+            test = serverResponse[1];
             //name  = serverResponse[1];
             Log.e("server response 0", serverResponse[0]+"");
             //Log.e("server response 1", serverResponse[1]+"");
@@ -230,7 +277,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
             //Log.e("server response 3", serverResponse[3]+"");
             if(serverResponse.length > 2)
             {
-                for (int i = 1; i < serverResponse.length - 1; i++) {
+                for (int i = 2; i < serverResponse.length - 1; i++) {
                     friends.add(serverResponse[i]);
 
                 }
@@ -240,6 +287,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
                 Intent FriendListIntent = new Intent(context,FriendsListActivity.class);
                 FriendListIntent.putExtra("email",email);
                 FriendListIntent.putExtra("name",name);
+                FriendListIntent.putExtra("profilePicString",profilePicString);
                 FriendListIntent.putStringArrayListExtra("friends", friends);
                 FriendListIntent.putStringArrayListExtra("countries", countries);
                 FriendListIntent.putStringArrayListExtra("countryNames", countryNames);
@@ -253,12 +301,12 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
             String test = "false";
             //String email = "";
             //String name = "";
-
+            String profilePicString = "";
             String[] serverResponse = result.split("[,]");
             //String[] countries = new String[serverResponse.length];
             ArrayList<String> usernames = new ArrayList<>();
-
-            test = serverResponse[0];
+            profilePicString = serverResponse[0];
+            test = serverResponse[1];
             //name  = serverResponse[1];
             Log.e("server response 0", serverResponse[0]+"");
             Log.e("server response 1", serverResponse[1]+"");
@@ -266,7 +314,7 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
             Log.e("server response 3", serverResponse[3]+"");
             if(serverResponse.length > 2)
             {
-                for (int i = 1; i < serverResponse.length - 1; i++) {
+                for (int i = 2; i < serverResponse.length - 1; i++) {
                     usernames.add(serverResponse[i]);
 
                 }
@@ -276,11 +324,41 @@ public class ConnectDBPassArray  extends AsyncTask<AsyncTaskParams,Void,String>{
             Intent AddFriendsIntent = new Intent(context,AddFriendsActivity.class);
             AddFriendsIntent.putExtra("email",email);
             AddFriendsIntent.putExtra("name",name);
+            AddFriendsIntent.putExtra("profilePicString",profilePicString);
             AddFriendsIntent.putStringArrayListExtra("usernames", usernames);
             AddFriendsIntent.putStringArrayListExtra("friends", friends);
             AddFriendsIntent.putStringArrayListExtra("countries", countries);
             AddFriendsIntent.putStringArrayListExtra("countryNames", countryNames);
             context.startActivity(AddFriendsIntent);
+
+
+
+        }
+        else if(flag.equals("profilePic"))
+        {
+            String test = "false";
+            //String email = "";
+            //String name = "";
+            String profilePicString = "";
+            //String[] serverResponse = result.split("[,]");
+            //String[] countries = new String[serverResponse.length];
+            //profilePicString = serverResponse[0];
+            profilePicString = result;
+            Log.e("profilePicStringTest", profilePicString+"");
+            Log.e("emailTest", email+"");
+            Log.e("nameTest", name+"");
+            Log.e("countriesTest", countries.get(0)+"");
+            Log.e("countryNamesTest", countryNames.get(0)+"");
+
+
+
+            Intent profileIntent = new Intent(context,CountryListActivity.class);
+            profileIntent.putExtra("email",email);
+            profileIntent.putExtra("name",name);
+            profileIntent.putExtra("profilePicString",profilePicString);
+            profileIntent.putStringArrayListExtra("countries", countries);
+            profileIntent.putStringArrayListExtra("countryNames", countryNames);
+            context.startActivity(profileIntent);
 
 
 

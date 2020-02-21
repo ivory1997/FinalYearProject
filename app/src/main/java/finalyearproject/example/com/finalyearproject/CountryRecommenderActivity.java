@@ -1,11 +1,14 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.annotation.SuppressLint;
+import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
@@ -35,6 +38,8 @@ public class CountryRecommenderActivity extends AppCompatActivity {
     int num1, num2, num3, num4, num5;
     String email;
     String name;
+    String profilePicString;
+    Bitmap profilePicBitmap;
     String recommendedCountry;
     private ListView navigationList;
     private RelativeLayout profileBox;
@@ -61,6 +66,10 @@ public class CountryRecommenderActivity extends AppCompatActivity {
         Log.e("country values", countries.get(0) + "");
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        avatar.setImageBitmap(profilePicBitmap);
         final ArrayList<String> listData = new ArrayList<>();
         userName = (TextView) findViewById(R.id.userName);
         userName.setText(name);
@@ -81,6 +90,7 @@ public class CountryRecommenderActivity extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
+                        profilePicString = receivedIntent.getStringExtra("profilePicString");
                         ConnectDB connectDB = new ConnectDB(CountryRecommenderActivity.this);
                         connectDB.execute(task,email,name);
                         break;
@@ -89,6 +99,7 @@ public class CountryRecommenderActivity extends AppCompatActivity {
                         Intent CountryListIntent = new Intent(CountryRecommenderActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putExtra("profilePicString",profilePicString);
                         //ChartIntent.putExtra("countries",countries);
                         //ChartIntent.putExtra("countriesLength",countries.length);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
@@ -99,7 +110,7 @@ public class CountryRecommenderActivity extends AppCompatActivity {
                         toastMessage("Friends List");
                         task = "friends";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(CountryRecommenderActivity.this);
-                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":

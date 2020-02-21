@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
@@ -12,6 +14,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.renderscript.ScriptGroup;
 import android.text.format.Formatter;
+import android.util.Base64;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -19,6 +22,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,7 +79,12 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             String registerEmail = params[1];
             String registerPassword = params[2];
             String registerName = params[3];
-
+            Bitmap defaultPicBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.defaultpic);
+            ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+            defaultPicBitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+            byte [] arr=baos.toByteArray();
+            String defaultpicString=Base64.encodeToString(arr, Base64.DEFAULT);
+            Log.e("pictureString", defaultpicString+"");
             try {
                 URL url = new URL(urlRegistration);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -86,7 +95,8 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
                 String myData = URLEncoder.encode("identifier_email","UTF-8")+"="+URLEncoder.encode(registerEmail,"UTF-8")+"&"
                         +URLEncoder.encode("identifier_password","UTF-8")+"="+URLEncoder.encode(registerPassword,"UTF-8")+"&"
-                        +URLEncoder.encode("identifier_name","UTF-8")+"="+URLEncoder.encode(registerName,"UTF-8");
+                        +URLEncoder.encode("identifier_name","UTF-8")+"="+URLEncoder.encode(registerName,"UTF-8")+"&"
+                        +URLEncoder.encode("profile_picture","UTF-8")+"="+URLEncoder.encode(defaultpicString,"UTF-8");
                 bufferedWriter.write(myData);
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -176,6 +186,8 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             try {
                 String email = params[1];
                 String name = params[2];
+                String profilePicString = params[3];
+                Log.e("pictureString3", profilePicString+"");
                 URL url = new URL(urlCountries);
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -192,6 +204,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
                 String result="";
+                result += profilePicString + ",";
                 String line="";
                 while((line = bufferedReader.readLine())!= null) {
                     result += line;
@@ -333,6 +346,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
 
         }
 
+
         return null;
     }
 
@@ -371,14 +385,16 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             String test = "false";
             String email = "";
             String name = "";
-
+            String profilePicString = "";
             String[] serverResponse = result.split("[,]");
             //String[] countries = new String[serverResponse.length];
             ArrayList<String> countries = new ArrayList<>();
             ArrayList<String> countryNames = new ArrayList<>();
-            test = serverResponse[0];
-            email = serverResponse[1];
-            name = serverResponse[2];
+            profilePicString = serverResponse[0];
+            test = serverResponse[1];
+            email = serverResponse[2];
+            name = serverResponse[3];
+
             Log.e("server response 0", serverResponse[0]+"");
             Log.e("server response 1", serverResponse[1]+"");
             Log.e("server response 2", serverResponse[2]+"");
@@ -387,7 +403,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             Log.e("server response 5", serverResponse[5]+"");
             Log.e("server response 6", serverResponse[6]+"");
             Log.e("server response 7", serverResponse[7]+"");
-            for(int i = 3; i < serverResponse.length; i+=2)
+            for(int i = 4; i < serverResponse.length; i+=2)
             {
                 countryNames.add(serverResponse[i]);
                 countries.add(serverResponse[i+1]);
@@ -400,6 +416,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 Intent ChartIntent = new Intent(context,ChartActivity.class);
                 ChartIntent.putExtra("email",email);
                 ChartIntent.putExtra("name",name);
+                ChartIntent.putExtra("profilePicString",profilePicString);
                 ChartIntent.putStringArrayListExtra("countries", countries);
                 ChartIntent.putStringArrayListExtra("countryNames", countryNames);
                 context.startActivity(ChartIntent);
@@ -449,6 +466,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             String test = "false";
             String name = "";
             String email = "";
+            String profilePicString = "";
             String[] serverResponse = result.split("[,]");
             test = serverResponse[0];
 
@@ -456,13 +474,18 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             if(test.contains("true")){
                 email = serverResponse[1];
                 name = serverResponse[2];
+                profilePicString = serverResponse[3];
+                Log.e("pictureString2", serverResponse[3]+"");
                 editor.putString("name",name);
                 editor.commit();
                 editor.putString("email",email);
                 editor.commit();
+                editor.putString("profilePicString",profilePicString);
+                editor.commit();
                 Intent loggedInIntent = new Intent(context,LoggedIn.class);
                 loggedInIntent.putExtra("name",name);
                 loggedInIntent.putExtra("email",email);
+                loggedInIntent.putExtra("profilePicString",profilePicString);
                 context.startActivity(loggedInIntent);
 
             }

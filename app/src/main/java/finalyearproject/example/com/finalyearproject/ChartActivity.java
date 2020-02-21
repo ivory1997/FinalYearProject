@@ -1,11 +1,14 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.annotation.SuppressLint;
+import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
@@ -38,6 +41,8 @@ public class ChartActivity extends AppCompatActivity {
     int num1, num2, num3, num4, num5;
     String email;
     String name;
+    String profilePicString;
+    Bitmap profilePicBitmap;
     private ListView navigationList;
     private RelativeLayout profileBox;
     private ImageView avatar;
@@ -59,12 +64,17 @@ public class ChartActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        byte [] encodeByte=Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        Log.e("pictureString4", profilePicString + "");
         countries = receivedIntent.getStringArrayListExtra("countries");
         countryNames = receivedIntent.getStringArrayListExtra("countryNames");
         Log.e("country names", countryNames.get(0) + "");
         Log.e("country values", countries.get(0) + "");
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
+        avatar.setImageBitmap(profilePicBitmap);
         final ArrayList<String> listData = new ArrayList<>();
         userName = (TextView) findViewById(R.id.userName);
         userName.setText(name);
@@ -92,6 +102,7 @@ public class ChartActivity extends AppCompatActivity {
                         Intent CountryListIntent = new Intent(ChartActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
+                        CountryListIntent.putExtra("profilePicString", profilePicString);
                         //ChartIntent.putExtra("countries",countries);
                         //ChartIntent.putExtra("countriesLength",countries.length);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
@@ -101,8 +112,9 @@ public class ChartActivity extends AppCompatActivity {
                     case "Friends List":
                         toastMessage("Friends List");
                         String task = "friends";
+                        String placeholder = "placeholder";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(ChartActivity.this);
-                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":
@@ -110,6 +122,7 @@ public class ChartActivity extends AppCompatActivity {
                         Intent RandomCountryIntent = new Intent(ChartActivity.this,RandomCountry.class);
                         RandomCountryIntent.putExtra("email",email);
                         RandomCountryIntent.putExtra("name",name);
+                        RandomCountryIntent.putExtra("profilePicString", profilePicString);
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
                         RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(RandomCountryIntent);
@@ -118,7 +131,7 @@ public class ChartActivity extends AppCompatActivity {
                         toastMessage("Country Recommender");
                         task = "recommend";
                         ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(ChartActivity.this);
-                        AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray2.execute(AsyncTaskParams2);
                         /*
                         Intent CountryRecommenderIntent = new Intent(ChartActivity.this,CountryRecommenderActivity.class);
@@ -143,6 +156,7 @@ public class ChartActivity extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(ChartActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
+                viewProfileIntent.putExtra("profilePicString", profilePicString);
                 viewProfileIntent.putStringArrayListExtra("countries", countries);
                 viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);

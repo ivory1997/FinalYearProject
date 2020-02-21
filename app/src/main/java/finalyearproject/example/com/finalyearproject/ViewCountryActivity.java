@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,6 +50,8 @@ public class ViewCountryActivity extends AppCompatActivity implements
         OnMapReadyCallback {
     String email;
     String name;
+    String profilePicString;
+    Bitmap profilePicBitmap;
     String selectedValue;
     String selectedNum2;
     double latitude = -33.865143;
@@ -82,6 +85,11 @@ public class ViewCountryActivity extends AppCompatActivity implements
         countryNames = receivedIntent.getStringArrayListExtra("countryNames");
         selectedValue = receivedIntent.getStringExtra("selectedValue");
         selectedNum2 = receivedIntent.getStringExtra("selectedNum");
+        avatar = (ImageView) findViewById(R.id.avatar);
+        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        avatar.setImageBitmap(profilePicBitmap);
         final TextView textView1 = (TextView) findViewById(R.id.textView1);
         final TextView textView2 = (TextView) findViewById(R.id.textView2);
         final TextView textView3 = (TextView) findViewById(R.id.textView3);
@@ -397,7 +405,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
                         toastMessage("Friends List");
                         task = "friends";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(ViewCountryActivity.this);
-                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,countries,countryNames);
+                        AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":
