@@ -25,22 +25,25 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
 @SuppressLint("SetJavaScriptEnabled")
-public class CountryRecommenderActivity extends AppCompatActivity {
+public class FriendChartActivity extends AppCompatActivity {
 
     WebView webView;
     int num1, num2, num3, num4, num5;
     String email;
     String name;
+    String friendName;
     String profilePicString;
     Bitmap profilePicBitmap;
-    String recommendedCountry;
     private ListView navigationList;
     private RelativeLayout profileBox;
     private ImageView avatar;
@@ -48,30 +51,37 @@ public class CountryRecommenderActivity extends AppCompatActivity {
     String countriesLength;
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
+    ArrayList<String> friendCountries = new ArrayList<>();
+    ArrayList<String> friendCountryNames = new ArrayList<>();
     List<Integer> newCountryList = new ArrayList<Integer>();
     String texto;
-
-    //String texto1 = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_random_country);
+        setContentView(R.layout.activity_friend_chart);
+
+        Globals g = (Globals)getApplication();
+        friendCountries=g.getFriendCountries();
+        friendCountryNames=g.getFriendCountryNames();
+        Log.e("friend country names", friendCountryNames.get(0) + "");
+        Log.e("friend country values", friendCountries.get(0) + "");
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
-        recommendedCountry = receivedIntent.getStringExtra("recommendedCountry");
+        friendName = receivedIntent.getStringExtra("friendName");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
+        byte [] encodeByte=Base64.decode(profilePicString, Base64.DEFAULT);
+        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        Log.e("pictureString4", profilePicString + "");
         countries = receivedIntent.getStringArrayListExtra("countries");
         countryNames = receivedIntent.getStringArrayListExtra("countryNames");
         Log.e("country names", countryNames.get(0) + "");
         Log.e("country values", countries.get(0) + "");
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
-        //profilePicString = receivedIntent.getStringExtra("profilePicString");
-        Globals g = (Globals)getApplication();
-        String  data=g.getData();
-        profilePicString = g.getData();
-        byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
-        profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
         final ArrayList<String> listData = new ArrayList<>();
         userName = (TextView) findViewById(R.id.userName);
@@ -81,6 +91,7 @@ public class CountryRecommenderActivity extends AppCompatActivity {
         listData.add("Country List");
         listData.add("Friends List");
         listData.add("Random Country Picker");
+        listData.add("Country Recommender");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         navigationList.setAdapter(adapter);
         navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -93,16 +104,15 @@ public class CountryRecommenderActivity extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
-                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
-                        ConnectDB connectDB = new ConnectDB(CountryRecommenderActivity.this);
+                        ConnectDB connectDB = new ConnectDB(FriendChartActivity.this);
                         connectDB.execute(task,email,name);
                         break;
                     case "Country List":
                         toastMessage("Country List");
-                        Intent CountryListIntent = new Intent(CountryRecommenderActivity.this,CountryListActivity.class);
+                        Intent CountryListIntent = new Intent(FriendChartActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
-                        //CountryListIntent.putExtra("profilePicString",profilePicString);
+                        //CountryListIntent.putExtra("profilePicString", profilePicString);
                         //ChartIntent.putExtra("countries",countries);
                         //ChartIntent.putExtra("countriesLength",countries.length);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
@@ -112,15 +122,36 @@ public class CountryRecommenderActivity extends AppCompatActivity {
                     case "Friends List":
                         toastMessage("Friends List");
                         task = "friends";
-                        ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(CountryRecommenderActivity.this);
+                        String placeholder = "placeholder";
+                        ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(FriendChartActivity.this);
                         AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":
                         toastMessage("Random Country Picker");
-                        Intent randomIntent = getIntent();
-                        finish();
-                        startActivity(randomIntent);
+                        Intent RandomCountryIntent = new Intent(FriendChartActivity.this,RandomCountry.class);
+                        RandomCountryIntent.putExtra("email",email);
+                        RandomCountryIntent.putExtra("name",name);
+                        RandomCountryIntent.putExtra("profilePicString", profilePicString);
+                        RandomCountryIntent.putStringArrayListExtra("countries", countries);
+                        RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(RandomCountryIntent);
+                        break;
+                    case "Country Recommender":
+                        toastMessage("Country Recommender");
+                        task = "recommend";
+                        ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(FriendChartActivity.this);
+                        AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
+                        connectDBPassArray2.execute(AsyncTaskParams2);
+                        /*
+                        Intent CountryRecommenderIntent = new Intent(ChartActivity.this,CountryRecommenderActivity.class);
+                        CountryRecommenderIntent.putExtra("email",email);
+                        CountryRecommenderIntent.putExtra("name",name);
+                        CountryRecommenderIntent.putStringArrayListExtra("countries", countries);
+                        CountryRecommenderIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryRecommenderIntent);
+                        */
+
                         break;
                 }
 
@@ -132,9 +163,10 @@ public class CountryRecommenderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent viewProfileIntent = new Intent(CountryRecommenderActivity.this, ViewProfile.class);
+                Intent viewProfileIntent = new Intent(FriendChartActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
+                viewProfileIntent.putExtra("profilePicString", profilePicString);
                 viewProfileIntent.putStringArrayListExtra("countries", countries);
                 viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);
@@ -147,25 +179,17 @@ public class CountryRecommenderActivity extends AppCompatActivity {
 
 
 
-        for(int i = 0;i < countryNames.size();i++)
+        for(int i = 0;i < friendCountryNames.size();i++)
         {
-            if(countryNames.get(i).contains("_"))
+            if(friendCountryNames.get(i).contains("_"))
             {
-                countryNames.get(i).replace("_"," ");
+                friendCountryNames.get(i).replace("_"," ");
             }
         }
-        String one = "1";
-        Log.e("country values before", countries.get(0)+"");
-        for(int i = 0;i < countries.size();i++)
-        {
 
-            countries.set(i,one);
 
-        }
-        Log.e("country values after", countries.get(0)+"");
-
-        List<Integer> newCountryList = new ArrayList<Integer>(countries.size()) ;
-        for (String myInt : countries)
+        List<Integer> newCountryList = new ArrayList<Integer>(friendCountries.size()) ;
+        for (String myInt : friendCountries)
         {
             newCountryList.add(Integer.valueOf(myInt));
         }
@@ -176,11 +200,11 @@ public class CountryRecommenderActivity extends AppCompatActivity {
         num3 = 2;
         num4 = 4;
         num5 = 5;
-        texto = "[{\"countryName\":"+"\""+countryNames.get(0)+"\""+", \"countryValue\":"+newCountryList.get(0)+"}";
+        texto = "[{\"countryName\":"+"\""+friendCountryNames.get(0)+"\""+", \"countryValue\":"+newCountryList.get(0)+"}";
         for(int i=1;i<newCountryList.size();i++)
         {
 
-            texto = texto + ",{\"countryName\":"+"\""+countryNames.get(i)+"\""+", \"countryValue\":"+newCountryList.get(i)+"}";
+            texto = texto + ",{\"countryName\":"+"\""+friendCountryNames.get(i)+"\""+", \"countryValue\":"+newCountryList.get(i)+"}";
             // stringBuilder.append("{countryName: "+countryNames.get(i)+", countryValue: "+newCountryList.get(i)+"}");
         }
         texto = texto + "]";
@@ -197,7 +221,7 @@ public class CountryRecommenderActivity extends AppCompatActivity {
         //webView.getSettings().setUseWideViewPort(true);
         webView.setInitialScale(180);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/recommenderGeochart.html");
+        webView.loadUrl("file:///android_asset/friendGeochart.html");
 
         //Android version variable
         final int version = Build.VERSION.SDK_INT;
@@ -315,10 +339,10 @@ public class CountryRecommenderActivity extends AppCompatActivity {
             this.selectedValue2 = selectedValue;
             this.selectedNum2 = selectedNum;
             selectedNum3 = Integer.toString(selectedNum2);
-
+/*
 
             //test start
-            Intent viewCountryIntent = new Intent(CountryRecommenderActivity.this,ViewCountryActivity.class);
+            Intent viewCountryIntent = new Intent(FriendChartActivity.this,ViewCountryActivity.class);
             viewCountryIntent.putExtra("email",email);
             viewCountryIntent.putExtra("name",name);
             viewCountryIntent.putStringArrayListExtra("countries", countries);
@@ -329,13 +353,12 @@ public class CountryRecommenderActivity extends AppCompatActivity {
             //test end
             Log.e("selectedValue2", selectedValue2+"");
             Log.e("selectedNum2", selectedNum3+"");
-
+*/
 
             //String task = "updateCountries";
             //ConnectDB connectDB = new ConnectDB(ChartActivity.this);
             //connectDB.execute(task,email,name,selectedValue2,selectedNum3);
         }
-
     }
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

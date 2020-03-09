@@ -1,5 +1,6 @@
 package finalyearproject.example.com.finalyearproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -35,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ViewCountryActivity extends AppCompatActivity implements
@@ -70,6 +75,8 @@ public class ViewCountryActivity extends AppCompatActivity implements
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
     List<Integer> newCountryList = new ArrayList<Integer>();
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,13 +93,17 @@ public class ViewCountryActivity extends AppCompatActivity implements
         selectedValue = receivedIntent.getStringExtra("selectedValue");
         selectedNum2 = receivedIntent.getStringExtra("selectedNum");
         avatar = (ImageView) findViewById(R.id.avatar);
-        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+        Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
         final TextView textView1 = (TextView) findViewById(R.id.textView1);
         final TextView textView2 = (TextView) findViewById(R.id.textView2);
         final TextView textView3 = (TextView) findViewById(R.id.textView3);
+        final TextView textView4 = (TextView) findViewById(R.id.textView4);
         final TextView userName = (TextView) findViewById(R.id.userName);
         final TextView textViewStatus = (TextView) findViewById(R.id.textViewStatus);
         if(selectedNum2.equals("1"))
@@ -290,7 +301,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
 
                                 JSONObject country = (JSONObject) response
                                         .get(i);
-                                if (textView2.getText().length() == 0 && textView3.getText().length() == 0) {
+                                if (textView2.getText().length() == 0 && textView3.getText().length() == 0 && textView4.getText().length() == 0) {
                                     String latlng = country.getString("latlng");
                                     String[] coordinates = latlng.split(",");
                                     String lat = coordinates[0].substring(1);
@@ -318,8 +329,42 @@ public class ViewCountryActivity extends AppCompatActivity implements
                                     textView2.setText("Population: " + population);
                                     String capital = country.getString("capital");
                                     textView3.setText("Capital City: " + capital);
+                                    //String languages = country.getString("languages");
+                                    String languageName = "";
+                                    String temp ;
+                                    JSONArray languages = country.getJSONArray("languages");
+                                    for (int j = 0; i < languages.length(); i++) {
+                                        JSONObject row = languages.getJSONObject(i);
+                                        temp = row.getString("name");
+                                        languageName = languageName + "," + temp;
+                                    }
+                                    languageName = languageName.substring(1);
+                                    //String languageName = languages.getString("name");
+                                    textView4.setText("Languages: " + languageName);
                                     String flagUrl = country.getString("flag");
+                                    Log.e("flagUrl", flagUrl);
+                                    /*
+                                    Picasso picasso = Picasso.with(getApplicationContext());
+                                    picasso.load(flagUrl)
+                                            .into(flag);
+                                            */
 
+                                    //Picasso.with(ViewCountryActivity.this).load(flagUrl).into(flag);
+                                    /*
+                                    try {
+                                        URL url = new URL(flagUrl);
+                                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                        connection.setDoInput(true);
+                                        connection.connect();
+                                        InputStream input = connection.getInputStream();
+                                        Bitmap bitmap = BitmapFactory.decodeStream(input);
+                                        flag.setImageBitmap(bitmap);
+                                    } catch (MalformedURLException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+*/
                                 }
 
 

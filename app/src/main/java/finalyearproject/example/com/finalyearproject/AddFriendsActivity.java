@@ -56,7 +56,10 @@ public class AddFriendsActivity extends AppCompatActivity {
         Log.e("username 1", userListData.get(0) + "");
         Log.e("username 2", userListData.get(1) + "");
         avatar = (ImageView) findViewById(R.id.avatar);
-        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+        Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
@@ -80,7 +83,10 @@ public class AddFriendsActivity extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
-                        profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        Globals g = (Globals)getApplication();
+                        String  data=g.getData();
+                        profilePicString = g.getData();
                         ConnectDB connectDB = new ConnectDB(AddFriendsActivity.this);
                         connectDB.execute(task,email,name,profilePicString);
                         break;
@@ -89,7 +95,7 @@ public class AddFriendsActivity extends AppCompatActivity {
                         Intent CountryListIntent = new Intent(AddFriendsActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
-                        CountryListIntent.putExtra("profilePicString",profilePicString);
+                        //CountryListIntent.putExtra("profilePicString",profilePicString);
 
                         //ChartIntent.putExtra("countries",countries);
                         //ChartIntent.putExtra("countriesLength",countries.length);
@@ -109,7 +115,7 @@ public class AddFriendsActivity extends AppCompatActivity {
                         Intent RandomCountryIntent = new Intent(AddFriendsActivity.this,RandomCountry.class);
                         RandomCountryIntent.putExtra("email",email);
                         RandomCountryIntent.putExtra("name",name);
-                        RandomCountryIntent.putExtra("profilePicString", profilePicString);
+                        //RandomCountryIntent.putExtra("profilePicString", profilePicString);
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
                         RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(RandomCountryIntent);
@@ -133,21 +139,19 @@ public class AddFriendsActivity extends AppCompatActivity {
         //Log.e("friend names", friendListData.get(0) + "");
         ListAdapter userAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, userListData);
         userList.setAdapter(userAdapter);
-        //friendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        //@Override
-        //public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //String countrySelection = countryNames.get(i);
-        //String selectedNum = countries.get(i);
-        //Intent viewCountryIntent = new Intent(FriendsListActivity.this,ViewfriendsActivity.class);
-        //viewCountryIntent.putExtra("email",email);
-        //viewCountryIntent.putExtra("name",name);
-        //viewCountryIntent.putStringArrayListExtra("countries", countries);
-        //viewCountryIntent.putStringArrayListExtra("countryNames", countryNames);
-        //viewCountryIntent.putExtra("selectedValue",countrySelection);
-        //String selectedNum ="0";
-        //viewCountryIntent.putExtra("selectedNum",selectedNum);
-        //startActivity(viewCountryIntent);
-
+        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String friendSelection = userListData.get(i);
+                Intent confirmAddFriendIntent = new Intent(AddFriendsActivity.this, confirmAddFriendActivity.class);
+                confirmAddFriendIntent.putExtra("email", email);
+                confirmAddFriendIntent.putExtra("name", name);
+                confirmAddFriendIntent.putStringArrayListExtra("countries", countries);
+                confirmAddFriendIntent.putStringArrayListExtra("countryNames", countryNames);
+                confirmAddFriendIntent.putExtra("friendSelection", friendSelection);
+                startActivity(confirmAddFriendIntent);
+            }
+        });
 
         // }
         //});

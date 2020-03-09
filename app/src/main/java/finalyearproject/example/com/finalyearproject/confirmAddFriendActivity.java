@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,48 +21,38 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+public class confirmAddFriendActivity extends AppCompatActivity {
 
-public class EditActivity extends AppCompatActivity {
-
-    Button btnEdit;
+    Button btnConfirm;
     private String name;
     private String email;
+    String friendSelection;
     String profilePicString;
     Bitmap profilePicBitmap;
-    private String updateEmail2;
-    private String updatePassword2;
-    private String updateName2;
-    private TextView userName, welcomeMessage, nameView, emailView;
+    TextView confirmationMessage;
+    private TextView userName;
     private ListView navigationList;
     private RelativeLayout profileBox;
     private ImageView avatar;
     private ImageView profilePic;
+
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
-
-    EditText updateEmail,updatePassword,updateName;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
-        btnEdit = (Button) findViewById(R.id.btnEdit);
+        setContentView(R.layout.activity_confirm_add_friend);
+        btnConfirm= (Button) findViewById(R.id.btnConfirm);
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
+        friendSelection = receivedIntent.getStringExtra("friendSelection");
         email = receivedIntent.getStringExtra("email");
         countries = receivedIntent.getStringArrayListExtra("countries");
         countryNames = receivedIntent.getStringArrayListExtra("countryNames");
-        updateEmail = (EditText) findViewById(R.id.updateEmail);
-        updatePassword = (EditText) findViewById(R.id.updatePassword);
-        updateName = (EditText) findViewById(R.id.updateName);
-        int maxLength = 30;
-        updateEmail.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
-        updatePassword.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
-        updateName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
-        updateEmail2 = updateEmail.getText().toString();
-        updatePassword2 = updatePassword.getText().toString();
-        updateName2 = updateName.getText().toString();
+        confirmationMessage = (TextView) findViewById(R.id.textView1);
+        confirmationMessage.setText("Add "+ friendSelection+" to your friends list?");
+
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
         //profilePicString = receivedIntent.getStringExtra("profilePicString");
@@ -73,6 +62,7 @@ public class EditActivity extends AppCompatActivity {
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
+
         userName = (TextView) findViewById(R.id.userName);
         userName.setText(name);
         final ArrayList<String> listData = new ArrayList<>();
@@ -92,12 +82,12 @@ public class EditActivity extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
-                        ConnectDB connectDB = new ConnectDB(EditActivity.this);
+                        ConnectDB connectDB = new ConnectDB(confirmAddFriendActivity.this);
                         connectDB.execute(task,email,name);
                         break;
                     case "Country List":
                         toastMessage("Country List");
-                        Intent CountryListIntent = new Intent(EditActivity.this,CountryListActivity.class);
+                        Intent CountryListIntent = new Intent(confirmAddFriendActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
@@ -107,13 +97,13 @@ public class EditActivity extends AppCompatActivity {
                     case "Friends List":
                         toastMessage("Friends List");
                         task = "friends";
-                        ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(EditActivity.this);
+                        ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(confirmAddFriendActivity.this);
                         AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
                         connectDBPassArray.execute(AsyncTaskParams);
                         break;
                     case "Random Country Picker":
                         toastMessage("Random Country Picker");
-                        Intent RandomCountryIntent = new Intent(EditActivity.this,RandomCountry.class);
+                        Intent RandomCountryIntent = new Intent(confirmAddFriendActivity.this,RandomCountry.class);
                         RandomCountryIntent.putExtra("email",email);
                         RandomCountryIntent.putExtra("name",name);
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
@@ -130,29 +120,29 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent viewProfileIntent = new Intent(EditActivity.this, ViewProfile.class);
+                Intent viewProfileIntent = new Intent(confirmAddFriendActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
-                viewProfileIntent.putExtra("profilePicString", profilePicString);
-                //viewProfileIntent.putStringArrayListExtra("countries", countries);
+                //viewProfileIntent.putExtra("profilePicString", profilePicString);
+                viewProfileIntent.putStringArrayListExtra("countries", countries);
                 viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);
+
             }
         });
 
 
 
 
-
-        btnEdit.setOnClickListener(new View.OnClickListener() {
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String task = "edit";
-                updateEmail2 = updateEmail.getText().toString();
-                updatePassword2 = updatePassword.getText().toString();
-                updateName2 = updateName.getText().toString();
-                ConnectDB connectDB = new ConnectDB(EditActivity.this);
-                connectDB.execute(task,email,updateEmail2,updatePassword2,updateName2);
+                String task = "confirmAddFriend";
+                ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(confirmAddFriendActivity.this);
+                AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,friendSelection,profilePicString,countries,countryNames);
+                connectDBPassArray.execute(AsyncTaskParams);
+                //ConnectDB connectDB = new ConnectDB(confirmAddFriendActivity.this);
+                //connectDB.execute(task,email,name,friendSelection);
 
 
             }

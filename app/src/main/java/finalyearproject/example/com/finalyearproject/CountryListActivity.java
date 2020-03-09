@@ -17,6 +17,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +58,14 @@ public class CountryListActivity extends AppCompatActivity {
         Log.e("country names", countryNames.get(0) + "");
         Log.e("country values", countries.get(0) + "");
 
+        Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
+        //String globalprofiler = g.getProfiler();
+        //Log.e("globalprofiler", globalprofiler + "");
+
         avatar = (ImageView) findViewById(R.id.avatar);
-        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
@@ -72,7 +89,10 @@ public class CountryListActivity extends AppCompatActivity {
                         Intent receivedIntent = getIntent();
                         name = receivedIntent.getStringExtra("name");
                         email = receivedIntent.getStringExtra("email");
-                        profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        Globals g = (Globals)getApplication();
+                        String  data=g.getData();
+                        profilePicString = g.getData();
                         ConnectDB connectDB = new ConnectDB(CountryListActivity.this);
                         connectDB.execute(task,email,name,profilePicString);
                         break;
@@ -94,7 +114,7 @@ public class CountryListActivity extends AppCompatActivity {
                         Intent RandomCountryIntent = new Intent(CountryListActivity.this,RandomCountry.class);
                         RandomCountryIntent.putExtra("email",email);
                         RandomCountryIntent.putExtra("name",name);
-                        RandomCountryIntent.putExtra("profilePicString", profilePicString);
+                        //RandomCountryIntent.putExtra("profilePicString", profilePicString);
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
                         RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(RandomCountryIntent);

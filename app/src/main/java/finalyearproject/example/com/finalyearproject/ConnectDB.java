@@ -20,6 +20,9 @@ import android.webkit.URLUtil;
 import android.widget.Toast;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.squareup.picasso.Picasso;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -73,6 +76,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
         String urlCountries  = "https://c16307271.000webhostapp.com/getCountries.php";
         String urlUpdateCountries  = "https://c16307271.000webhostapp.com/updateCountries.php";
         String urlFriends  = "https://c16307271.000webhostapp.com/getFriends.php";
+        String urlConfirmAddFriend = "https://c16307271.000webhostapp.com/confirmAddFriend.php";
         String task = params[0];
 
         if(task.equals("register")){
@@ -153,6 +157,7 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
         }
         if(task.equals("delete")){
             String deleteEmail = params[1];
+            String deleteName = params[2];
 
             try {
                 URL url = new URL(urlDelete);
@@ -162,7 +167,8 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream,"UTF-8");
                 BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-                String myData = URLEncoder.encode("identifier_deleteEmail","UTF-8")+"="+URLEncoder.encode(deleteEmail,"UTF-8");
+                String myData = URLEncoder.encode("identifier_deleteEmail","UTF-8")+"="+URLEncoder.encode(deleteEmail,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_deleteName","UTF-8")+"="+URLEncoder.encode(deleteName,"UTF-8");
                 bufferedWriter.write(myData);
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -186,8 +192,10 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             try {
                 String email = params[1];
                 String name = params[2];
-                String profilePicString = params[3];
-                Log.e("pictureString3", profilePicString+"");
+                Globals g = Globals.getConfig();
+                String profilePicString = g.getData();
+                //String profilePicString = params[3];
+                //Log.e("pictureString3", profilePicString+"");
                 URL url = new URL(urlCountries);
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -305,6 +313,40 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 e.printStackTrace();
             }
         }
+        if(task.equals("confirmAddFriend")){
+            String userEmail = params[1];
+            String userName = params[2];
+            String friendName = params[3];
+
+            try {
+                URL url = new URL(urlConfirmAddFriend);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream,"UTF-8");
+                BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+                String myData = URLEncoder.encode("identifier_userEmail","UTF-8")+"="+URLEncoder.encode(userEmail,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_userName","UTF-8")+"="+URLEncoder.encode(userName,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_friendName","UTF-8")+"="+URLEncoder.encode(friendName,"UTF-8");
+                bufferedWriter.write(myData);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                inputStream.close();
+
+                editor.putString("flag","confirmAddFriend");
+                editor.commit();
+                String result="";
+                result = "Successfully added user " + friendName;
+                return result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
         if(task.equals("edit")){
             String oldEmail = params[1];
             String updatedEmail = params[2];
@@ -380,17 +422,22 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
         else if(flag.equals("updateCountries")) {
             Toast.makeText(context,result,Toast.LENGTH_LONG).show();
         }
+        else if(flag.equals("confirmAddFriend")) {
+            Toast.makeText(context,result,Toast.LENGTH_LONG).show();
+            Intent mainIntent = new Intent(context,MainActivity.class);
+            context.startActivity(mainIntent);
+        }
         else if(flag.equals("countries"))
         {
             String test = "false";
             String email = "";
             String name = "";
-            String profilePicString = "";
+            //String profilePicString = "";
             String[] serverResponse = result.split("[,]");
             //String[] countries = new String[serverResponse.length];
             ArrayList<String> countries = new ArrayList<>();
             ArrayList<String> countryNames = new ArrayList<>();
-            profilePicString = serverResponse[0];
+            //profilePicString = serverResponse[0];
             test = serverResponse[1];
             email = serverResponse[2];
             name = serverResponse[3];
@@ -411,12 +458,17 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
 
             }
 
+            //(Globals) globals.this.getApplication()).setData(profilePicString);
+            //Globals g = (Globals).getApplication();
+            //Globals g = Globals.getConfig();
+            //g.setData(profilePicString);
+
 
             if(test.contains("true")){
                 Intent ChartIntent = new Intent(context,ChartActivity.class);
                 ChartIntent.putExtra("email",email);
                 ChartIntent.putExtra("name",name);
-                ChartIntent.putExtra("profilePicString",profilePicString);
+                //ChartIntent.putExtra("profilePicString",profilePicString);
                 ChartIntent.putStringArrayListExtra("countries", countries);
                 ChartIntent.putStringArrayListExtra("countryNames", countryNames);
                 context.startActivity(ChartIntent);
@@ -469,23 +521,29 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             String profilePicString = "";
             String[] serverResponse = result.split("[,]");
             test = serverResponse[0];
-
+            //Log.e("profilePicSTringdecode", serverResponse[3]+"");
 
             if(test.contains("true")){
                 email = serverResponse[1];
                 name = serverResponse[2];
                 profilePicString = serverResponse[3];
-                Log.e("pictureString2", serverResponse[3]+"");
+                //Log.e("profilePicStringencode", profilePicString+"");
+                //byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
+                //profilePicString=Base64.encodeToString(encodeByte, Base64.DEFAULT);
+                //Log.e("profilePicStringdecode", profilePicString+"");
+                Globals g = Globals.getConfig();
+                g.setData(profilePicString);
+                //Log.e("pictureString2", serverResponse[3]+"");
                 editor.putString("name",name);
                 editor.commit();
                 editor.putString("email",email);
                 editor.commit();
-                editor.putString("profilePicString",profilePicString);
+                //editor.putString("profilePicString",profilePicString);
                 editor.commit();
                 Intent loggedInIntent = new Intent(context,LoggedIn.class);
                 loggedInIntent.putExtra("name",name);
                 loggedInIntent.putExtra("email",email);
-                loggedInIntent.putExtra("profilePicString",profilePicString);
+                //loggedInIntent.putExtra("profilePicString",profilePicString);
                 context.startActivity(loggedInIntent);
 
             }

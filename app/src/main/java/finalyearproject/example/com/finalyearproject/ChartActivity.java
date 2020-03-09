@@ -64,7 +64,10 @@ public class ChartActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
-        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+        Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
         byte [] encodeByte=Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         Log.e("pictureString4", profilePicString + "");
@@ -102,7 +105,7 @@ public class ChartActivity extends AppCompatActivity {
                         Intent CountryListIntent = new Intent(ChartActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
-                        CountryListIntent.putExtra("profilePicString", profilePicString);
+                        //CountryListIntent.putExtra("profilePicString", profilePicString);
                         //ChartIntent.putExtra("countries",countries);
                         //ChartIntent.putExtra("countriesLength",countries.length);
                         CountryListIntent.putStringArrayListExtra("countries", countries);

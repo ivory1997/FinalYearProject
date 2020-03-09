@@ -54,7 +54,10 @@ public class DeleteActivity extends AppCompatActivity {
 
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
-        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+        Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
@@ -119,7 +122,7 @@ public class DeleteActivity extends AppCompatActivity {
                 Intent viewProfileIntent = new Intent(DeleteActivity.this, ViewProfile.class);
                 viewProfileIntent.putExtra("name", name);
                 viewProfileIntent.putExtra("email", email);
-                viewProfileIntent.putExtra("profilePicString", profilePicString);
+                //viewProfileIntent.putExtra("profilePicString", profilePicString);
                 viewProfileIntent.putStringArrayListExtra("countries", countries);
                 viewProfileIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(viewProfileIntent);
@@ -136,7 +139,7 @@ public class DeleteActivity extends AppCompatActivity {
                 String task = "delete";
 
                 ConnectDB connectDB = new ConnectDB(DeleteActivity.this);
-                connectDB.execute(task,email);
+                connectDB.execute(task,email,name);
 
 
             }

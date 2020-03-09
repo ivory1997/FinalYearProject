@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                     String task = "login";
 
                     ConnectDB connectDB = new ConnectDB(LoginActivity.this);
-                    connectDB.execute(task,loginEmail, loginPassword);
+                    connectDB.execute(task,loginEmail,loginPassword);
                 }
 
 

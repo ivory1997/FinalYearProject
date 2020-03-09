@@ -1,6 +1,8 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -27,6 +29,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +63,8 @@ public class ProfilePicture extends AppCompatActivity {
     private ImageView profilePic;
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +79,10 @@ public class ProfilePicture extends AppCompatActivity {
         navigationList = (ListView) findViewById(R.id.navigationList);
         avatar = (ImageView) findViewById(R.id.avatar);
         profilePic = (ImageView) findViewById(R.id.profilePic);
-        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+        Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
@@ -186,13 +195,45 @@ public class ProfilePicture extends AppCompatActivity {
                 BitmapDrawable drawable = (BitmapDrawable)profilePic.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
                 */
+                /*
                 profilePicBitmap = ((BitmapDrawable)profilePic.getDrawable()).getBitmap();
                 ByteArrayOutputStream baos=new  ByteArrayOutputStream();
                 profilePicBitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
                 byte [] arr=baos.toByteArray();
                 profilePicString=Base64.encodeToString(arr, Base64.DEFAULT);
                 Log.e("profilePicStringupload", profilePicString + "");
+
+                 */
+                ByteArrayOutputStream baos=new  ByteArrayOutputStream();
                 avatar.setImageBitmap(profilePicBitmap);
+                final int maxSize = 300;
+                int outWidth;
+                int outHeight;
+                int inWidth = profilePicBitmap.getWidth();
+                int inHeight = profilePicBitmap.getHeight();
+                if(inWidth > inHeight){
+                    outWidth = maxSize;
+                    outHeight = (inHeight * maxSize) / inWidth;
+                } else {
+                    outHeight = maxSize;
+                    outWidth = (inWidth * maxSize) / inHeight;
+                }
+
+                profilePicBitmap = Bitmap.createScaledBitmap(profilePicBitmap, outWidth, outHeight, false);
+                profilePicBitmap.compress(Bitmap.CompressFormat.PNG,1, baos);
+                byte [] arr=baos.toByteArray();
+                profilePicString=Base64.encodeToString(arr, Base64.DEFAULT);
+                Log.e("profilePicStringupload", profilePicString + "");
+
+                Globals g = (Globals)getApplication();
+                g.setData(profilePicString);
+                g.setProfilePicBitmap(profilePicBitmap);
+                String  data=g.getData();
+                g.setEmail(email);
+                g.setName(name);
+                String globalprofiler = g.getData();
+                Log.e("globalprofilerPIC", globalprofiler + "");
+
                 String task = "profilePic";
                 ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(ProfilePicture.this);
                 AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);

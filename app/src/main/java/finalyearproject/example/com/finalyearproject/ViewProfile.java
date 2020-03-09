@@ -54,7 +54,10 @@ public class ViewProfile extends AppCompatActivity {
         emailView.setText("Email: " + email);
 
 
-        profilePicString = receivedIntent2.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent2.getStringExtra("profilePicString");
+        Globals g = (Globals)getApplication();
+        String  data=g.getData();
+        profilePicString = g.getData();
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         Log.e("pictureString4", profilePicString + "");
@@ -93,7 +96,7 @@ public class ViewProfile extends AppCompatActivity {
                         Intent CountryListIntent = new Intent(ViewProfile.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
-                        CountryListIntent.putExtra("profilePicString", profilePicString);
+                        //CountryListIntent.putExtra("profilePicString", profilePicString);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
@@ -170,7 +173,7 @@ public class ViewProfile extends AppCompatActivity {
                 Intent profilePicIntent = new Intent(ViewProfile.this,ProfilePicture.class);
                 profilePicIntent.putExtra("name",name);
                 profilePicIntent.putExtra("email",email);
-                profilePicIntent.putExtra("profilePicString", profilePicString);
+                //profilePicIntent.putExtra("profilePicString", profilePicString);
                 profilePicIntent.putStringArrayListExtra("countries", countries);
                 profilePicIntent.putStringArrayListExtra("countryNames", countryNames);
                 startActivity(profilePicIntent);

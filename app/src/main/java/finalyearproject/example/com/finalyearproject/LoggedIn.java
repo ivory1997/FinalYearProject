@@ -19,12 +19,12 @@ public class LoggedIn extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         name = receivedIntent.getStringExtra("name");
         email = receivedIntent.getStringExtra("email");
-        profilePicString = receivedIntent.getStringExtra("profilePicString");
+        //profilePicString = receivedIntent.getStringExtra("profilePicString");
         //countriesLength = receivedIntent.getStringExtra("countriesLength");
         //int countriesLengthInt = Integer.parseInt(countriesLength);
         //String[] countries = new String[countriesLengthInt];
         //countries = receivedIntent.getStringExtra("countries");
         ConnectDB connectDB = new ConnectDB(LoggedIn.this);
-        connectDB.execute(task,email,name,profilePicString);
+        connectDB.execute(task,email,name);
     }
 }
