@@ -4,8 +4,9 @@ require "server_connection.php";
 $user_email = $_POST["identifier_email"];
 $user_pass = $_POST["identifier_password"];
 $user_name = $_POST["identifier_name"];
+$picture = $_POST["profile_picture"];
 
-$query = "INSERT INTO users(email,password,name) VALUES ('$user_email','$user_pass','$user_name')";
+$query = "INSERT INTO users(email,password,name,picture) VALUES ('$user_email','$user_pass','$user_name','$picture')";
 $query2 = "INSERT INTO countries(email,
 Ireland,
 Madagascar,
