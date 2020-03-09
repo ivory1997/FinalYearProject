@@ -11,7 +11,9 @@ if(mysqli_num_rows($result)>0){
 	$row = mysqli_fetch_assoc($result);
 	$name = $row["name"];
 	$email = $row["email"];
-	echo "true,".$email.",".$name;
+	$picture = $row["picture"];
+	//$picture2 = base64_encode($picture);
+	echo "true,".$email.",".$name.",".$picture;
 }
 else{
 	echo "Login was not successful... :(";
