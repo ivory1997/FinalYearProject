@@ -360,8 +360,10 @@ public class RandomCountry extends AppCompatActivity {
                     selectedValueChars[i] = ' ';
                 }
             }
+
             Log.e("Value modification",selectedValue);
             selectedValue = String.valueOf(selectedValueChars);
+
             if(selectedValue.equals("United States"))
             {
                 selectedValue = "US";

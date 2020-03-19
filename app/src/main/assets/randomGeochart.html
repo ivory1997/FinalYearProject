@@ -16,6 +16,8 @@
     <h1 id = "DisplayCountry"></h1>
     <h1 id = "population"></h1>
     <h1 id = "capital"></h1>
+    <h1 id = "languages"></h1>
+    <h1 id = "currencies"></h1>
     <h1 id = "apiResponse"></h1>
 </div>
 </body>
@@ -83,19 +85,82 @@
   var x = Math.floor((Math.random() * 192) + 0);
   var two = "2";
   var colourCountry = Android.setCountryNameRandom();
-if(colourCountry == "Netherlands")
-    {
-        colourCountry = "NL";
-    }
   for (i = 0; i < jsonObj.length; i++)
             {
                 countryArray[i+1] =[jsonObj[i].countryName,jsonObj[i].countryValue];
             }
-  countryArray[x+1] =[colourCountry,two];
+  //countryArray[x+1] =[colourCountry,two];
+  countryArray[x+1] =[jsonObj[x].countryName,two];
+    var jsCountryapi = jsonObj[x].countryName;
+    var URL;
+    var i;
+  //char[] selectedValueChars = jsCountryapi.toCharArray();
+            for(i =0; i < jsCountryapi.length; i++)
+            {
+                if (jsCountryapi.charAt(i) == '_')
+                {
+                    jsCountryapi.charAt(i) = ' ';
+                }
+            }
+            //jsCountryapi = String.valueOf(selectedValueChars);
+
+            if(jsCountryapi == "United States")
+            {
+                jsCountryapi = "US";
+            }
+            if(jsCountryapi == "Niger")
+            {
+                jsCountryapi = "NE";
+            }
+            if(jsCountryapi == "Russia")
+            {
+                jsCountryapi = "Russian Federation";
+            }
+            if(jsCountryapi.length == 2)
+            {
+                URL = "https://restcountries.eu/rest/v2/alpha?codes="+jsCountryapi;
+            }
+            else
+            {
+                URL = "https://restcountries.eu/rest/v2/name/" + jsCountryapi;
+            }
+
+const Http = new XMLHttpRequest();
+Http.open("GET", URL);
+Http.send();
+
+Http.onreadystatechange = (e) => {
+  //console.log(Http.responseText)
+  var obj = JSON.parse(Http.responseText);
+  document.getElementById("DisplayCountry").innerHTML = obj[0].name;
+  document.getElementById("population").innerHTML = "Population: " +obj[0].population;
+  document.getElementById("capital").innerHTML = "Capital: " +obj[0].capital;
+
+  //languages
+  var languagesString = " ";
+  var i;
+  for (i = 0; i < obj[0].languages.length; i++)
+            {
+                languagesString = languagesString + obj[0].languages[i].name + ", ";
+            }
+            languagesString = languagesString.slice(0, -2);
+  document.getElementById("languages").innerHTML = "Languages:" +languagesString;
+
+  //currencies
+  var currencyString = " ";
+  var i;
+  for (i = 0; i < obj[0].currencies.length; i++)
+            {
+                currencyString = currencyString + obj[0].currencies[i].name + ", ";
+            }
+            currencyString = currencyString.slice(0, -2);
+  document.getElementById("currencies").innerHTML = "Currencies:" +currencyString;
+};
+
   var randomCountryName = jsonObj[x].countryName;
   var apiResponse = Android.getAPIinfo(randomCountryName);
   //apiResponse = Android.getAPIinfo(randomCountryName);
-document.getElementById("apiResponse").innerHTML = apiResponse;
+//document.getElementById("apiResponse").innerHTML = apiResponse;
   //var population = Android.setPopulation();
   //var capital = Android.setCapital();
   //Android.setPopulation2(population);
@@ -123,9 +188,9 @@ function countryInformation(){
   var countryNameRandom2 = Android.setCountryNameRandom2();
   //Android.setPopulation2(population);
   //Android.setCapital2(capital);
-  document.getElementById("DisplayCountry").innerHTML = countryNameRandom2;
-  document.getElementById("population").innerHTML = "Population: " +population;
-  document.getElementById("capital").innerHTML = "Capital: " +capital;
+  //document.getElementById("DisplayCountry").innerHTML = countryNameRandom2;
+  //document.getElementById("population").innerHTML = "Population: " +population;
+  //document.getElementById("capital").innerHTML = "Capital: " +capital;
 
 }
 

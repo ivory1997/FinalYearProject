@@ -51,10 +51,21 @@ public class AddFriendsActivity extends AppCompatActivity {
         countryNames = receivedIntent.getStringArrayListExtra("countryNames");
         friendListData = receivedIntent.getStringArrayListExtra("friends");
         userListData = receivedIntent.getStringArrayListExtra("usernames");
-        Log.e("country names", countryNames.get(0) + "");
-        Log.e("country values", countries.get(0) + "");
-        Log.e("username 1", userListData.get(0) + "");
-        Log.e("username 2", userListData.get(1) + "");
+        userListData.remove(name);
+        for(int i=0; i<friendListData.size(); i++)
+        {
+
+            if (userListData.contains(friendListData.get(i)));
+            {
+                userListData.remove(friendListData.get(i));
+
+            }
+        }
+
+        //Log.e("country names", countryNames.get(0) + "");
+        //Log.e("country values", countries.get(0) + "");
+        //Log.e("username 1", userListData.get(0) + "");
+        //Log.e("username 2", userListData.get(1) + "");
         avatar = (ImageView) findViewById(R.id.avatar);
         //profilePicString = receivedIntent.getStringExtra("profilePicString");
         Globals g = (Globals)getApplication();
