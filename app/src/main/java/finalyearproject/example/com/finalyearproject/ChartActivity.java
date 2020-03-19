@@ -303,6 +303,11 @@ public class ChartActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
+        public String getName() {
+            return name;
+        }
+
+        @JavascriptInterface
         public int getNum1() {
             return num1;
         }

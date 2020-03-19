@@ -1,0 +1,13 @@
+#top{
+    height:100px;
+    width:120px;
+    text-align: center;
+    margin:0 auto;
+    display:block;
+}
+#geochart-colors{
+width: 600px;
+height: 400px;
+position: relative;
+}
+

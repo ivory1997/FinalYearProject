@@ -1,54 +1,46 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <!-- The main content view -->
-
-
-
-    <RelativeLayout
-        android:id="@+id/mainContent"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Nice">
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@color/Nice"
+        tools:context=".confirmAddFriendActivity">
 
-        <TextView
-            android:id="@+id/usernamesFriends"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/friendList"
-            android:text="Name"
-            android:textColor="#fff"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_centerInParent="true"
+            android:background="@drawable/box">
 
-        <ListView
-            android:id="@+id/friendList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:choiceMode="singleChoice"
-            android:background="#ffffffff" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_margin="16dp"
-            app:maxImageSize = "65dp"
-            app:backgroundTint="@color/material_blue_grey_800"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            app:layout_anchorGravity="bottom|right|end"
-            android:src="@drawable/plus" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/NiceWhite"
+                android:text="Are you sure you want to remove this friend from your friends list?"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp" />
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView1"
+                android:layout_centerHorizontal="true"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:text="Remove friend" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
-
 
     <!-- The navigation drawer -->
     <RelativeLayout

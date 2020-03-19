@@ -26,8 +26,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -47,6 +58,8 @@ public class RandomCountry extends AppCompatActivity {
     private RelativeLayout profileBox;
     private ImageView avatar;
     private TextView userName;
+    //private String population;
+    //private String capital;
     String countriesLength;
     ArrayList<String> countries = new ArrayList<>();
     ArrayList<String> countryNames = new ArrayList<>();
@@ -80,7 +93,6 @@ public class RandomCountry extends AppCompatActivity {
         final ArrayList<String> listData = new ArrayList<>();
         userName = (TextView) findViewById(R.id.userName);
         userName.setText(name);
-
         listData.add("My Map");
         listData.add("Country List");
         listData.add("Friends List");
@@ -268,7 +280,8 @@ public class RandomCountry extends AppCompatActivity {
 
     }
     public class WebAppInterface {
-
+        private String population;
+        private String capital;
 /*
         @JavascriptInterface
         public JSONArray getChartData() {
@@ -324,24 +337,209 @@ public class RandomCountry extends AppCompatActivity {
             this.selectedNum2 = selectedNum;
             selectedNum3 = Integer.toString(selectedNum2);
 
+        }
 
-            //test start
-            Intent viewCountryIntent = new Intent(RandomCountry.this,ViewCountryActivity.class);
-            viewCountryIntent.putExtra("email",email);
-            viewCountryIntent.putExtra("name",name);
-            viewCountryIntent.putStringArrayListExtra("countries", countries);
-            viewCountryIntent.putStringArrayListExtra("countryNames", countryNames);
-            viewCountryIntent.putExtra("selectedValue",selectedValue2);
-            viewCountryIntent.putExtra("selectedNum",selectedNum3);
-            startActivity(viewCountryIntent);
-            //test end
+
+        @JavascriptInterface
+        public String getAPIinfo(String selectedValue) {
+            //String selectedValue = this.selectedValue2;
+            //int selectedNum = this.selectedNum2;
+            //TEST start
+
+            //String countryNameRandom = selectedValue;
+
+            String URL;
+            Log.e("Value geochart",selectedValue);
+            Globals g = (Globals)getApplication();
+            g.setCountryNameRandom(selectedValue);
+            char[] selectedValueChars = selectedValue.toCharArray();
+            for(int i =0; i < selectedValue.length(); i++)
+            {
+                if (selectedValueChars[i] == '_')
+                {
+                    selectedValueChars[i] = ' ';
+                }
+            }
+            Log.e("Value modification",selectedValue);
+            selectedValue = String.valueOf(selectedValueChars);
+            if(selectedValue.equals("United States"))
+            {
+                selectedValue = "US";
+            }
+            if(selectedValue.equals("Niger"))
+            {
+                selectedValue = "NE";
+            }
+            if(selectedValue.equals("Russia"))
+            {
+                selectedValue = "Russian Federation";
+            }
+            Log.e("Value Simplified",selectedValue);
+            if(selectedValue.length()==2)
+            {
+                URL = "https://restcountries.eu/rest/v2/alpha?codes="+selectedValue;
+            }
+            else
+            {
+                //URL = "https://restcountries.eu/rest/v2/name/"+selectedValue+"?fullText=true";
+                URL = "https://restcountries.eu/rest/v2/name/" + selectedValue;
+            }
+            Log.e("URL value",URL);
+            RequestQueue requestQueue= Volley.newRequestQueue(RandomCountry.this);
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                    Request.Method.GET,
+                    URL,
+                    null,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            Log.e("REST RESPONSE",response.toString());
+                            try {
+                                // Parsing json array response
+                                // loop through each json object
+                                String jsonResponse = "";
+                                for (int i = 0; i < response.length(); i++) {
+
+                                    JSONObject country = (JSONObject) response
+                                            .get(i);
+                                        String latlng = country.getString("latlng");
+                                        String[] coordinates = latlng.split(",");
+                                        String lat = coordinates[0].substring(1);
+                                        String lon = coordinates[1].replace((coordinates[1].substring(coordinates[1].length() - 1)), "");
+                                        lon = lon.split("\\.", 2)[0];
+                                        lat = lat.split("\\.", 2)[0];
+                                        //String latitude = latlng.substring(1, latlng.indexOf(","));
+                                        //latitude.trim();
+                                        double latitude1 = Double.valueOf(lat);
+                                        double longitude1 = Double.valueOf(lon);
+                                        //setLat(latitude1);
+                                        //setLon(longitude1);
+                                        //coordinatesSet = true;
+                                        int latInt = Integer.parseInt(lat);
+                                        int lonInt = Integer.parseInt(lon);
+                                        jsonResponse += "latlng: " + latlng + "\n\n";
+                                        Log.e("latlng", latlng);
+                                        Log.e("latitude", coordinates[0]);
+                                        Log.e("latitude", lat);
+                                        Log.e("longitude", lon);
+
+                                        population = country.getString("population");
+                                        Log.e("Population", population);
+                                        capital = country.getString("capital");
+                                        Log.e("Capital", capital);
+                                        setPopulation2(population);
+                                        setCapital2(capital);
+                                        String pop = population;
+                                        String cap = capital;
+                                        String countryNameRandom = country.getString("name");
+                                        Globals g = (Globals)getApplication();
+                                        g.setPop(pop);
+                                        g.setCap(cap);
+                                        g.setCountryNameRandom2(countryNameRandom);
+                                        //String languages = country.getString("languages");
+                                        String languageName = "";
+                                        String temp;
+                                        JSONArray languages = country.getJSONArray("languages");
+                                        for (int j = 0; i < languages.length(); i++) {
+                                            JSONObject row = languages.getJSONObject(i);
+                                            temp = row.getString("name");
+                                            languageName = languageName + "," + temp;
+                                        }
+                                       // languageName = languageName.substring(1);
+                                        //String languageName = languages.getString("name");
+                                        String flagUrl = country.getString("flag");
+                                        Log.e("flagUrl", flagUrl);
+                                        String task = "flag";
+
+
+
+
+
+
+                                }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(),
+                                        "Error: " + e.getMessage(),
+                                        Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("REST RESPONSE ERROR",error.toString());
+                        }
+                    }
+            );
+            requestQueue.add(jsonArrayRequest);
+            //TESTING API RESPONSE END
+            if(selectedValue == "US")
+            {
+                selectedValue = "United_States";
+            }
+            if(selectedValue.equals("Russian Federation"))
+            {
+                selectedValue = "Russia";
+            }
+
+            if(selectedValue.equals("NE"))
+            {
+                selectedValue = "Niger";
+            }
+
             Log.e("selectedValue2", selectedValue2+"");
-            Log.e("selectedNum2", selectedNum3+"");
+            //Log.e("selectedNum2", selectedNum3+"");
 
-
+            //TEST END
             //String task = "updateCountries";
             //ConnectDB connectDB = new ConnectDB(ChartActivity.this);
             //connectDB.execute(task,email,name,selectedValue2,selectedNum3);
+            return population;
+        }
+        @JavascriptInterface
+        public String setPopulation()
+        {
+            Globals g = (Globals)getApplication();
+            String  pop=g.getPop();
+            return pop;
+        }
+        @JavascriptInterface
+        public void setPopulation2(String population2)
+        {
+            this.population = population2;
+        }
+        @JavascriptInterface
+        public String setCapital()
+        {
+            Globals g = (Globals)getApplication();
+            String  cap=g.getCap();
+            return cap;
+        }
+        @JavascriptInterface
+        public String setCountryNameRandom()
+        {
+            Globals g = (Globals)getApplication();
+            String countryNameRandom=g.getCountryNameRandom();
+            Log.e("country going to js", countryNameRandom+"");
+            return countryNameRandom;
+        }
+
+        @JavascriptInterface
+        public String setCountryNameRandom2()
+        {
+            Globals g = (Globals)getApplication();
+            String  countryNameRandom2=g.getCountryNameRandom2();
+            return countryNameRandom2;
+        }
+
+        @JavascriptInterface
+        public void setCapital2(String capital2)
+        {
+           this.capital = capital2;
         }
     }
     private void toastMessage(String message) {

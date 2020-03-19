@@ -28,7 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".FriendChartActivity"></activity>
+        <activity android:name=".ConfirmDeleteFriendActivity"></activity>
+        <activity android:name=".FriendChartActivity" />
         <activity android:name=".confirmAddFriendActivity" />
         <activity android:name=".CountryRecommenderActivity" />
         <activity android:name=".RandomCountry" />

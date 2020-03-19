@@ -1,5 +1,6 @@
 package finalyearproject.example.com.finalyearproject;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -21,12 +23,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FriendsListActivity extends AppCompatActivity {
 
     private ListView navigationList, friendList;
     private RelativeLayout profileBox;
     private ImageView avatar;
     private TextView userName;
+    private TextView usernamesFriends;
     String email;
     String name;
     String profilePicString;
@@ -63,6 +67,9 @@ public class FriendsListActivity extends AppCompatActivity {
         final ArrayList<String> listData = new ArrayList<>();
         userName = (TextView) findViewById(R.id.userName);
         userName.setText(name);
+        usernamesFriends = (TextView) findViewById(R.id.usernamesFriends);
+        String textforUsernamesFriends = name + "'s friends";
+        usernamesFriends.setText(textforUsernamesFriends);
         listData.add("My Map");
         listData.add("Country List");
         listData.add("Friends List");
@@ -189,6 +196,7 @@ public class FriendsListActivity extends AppCompatActivity {
 
 
     }
+
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

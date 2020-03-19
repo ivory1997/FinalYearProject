@@ -3,10 +3,33 @@
     <link id = "pagestyle" rel = "stylesheet" href = "random.css" type = "text/css"/>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('upcoming', {'packages':['geochart']});
+
+
+    </script>
+</head>
+<body bgcolor="#42b6f5">
+<div id="geochart-colors" style="width: 600px; height: 400px;"></div>
+<div class = "text-align">
+<input type="button" class="btn" value="Random country" onclick="randomCountryFunction()">
+</div>
+<div id="Country" >
+    <h1 id = "DisplayCountry"></h1>
+    <h1 id = "population"></h1>
+    <h1 id = "capital"></h1>
+    <h1 id = "apiResponse"></h1>
+</div>
+</body>
+</html>
+<script>
+  google.charts.load('upcoming', {'packages':['geochart']});
       google.charts.setOnLoadCallback(drawRegionsMap);
       var chart;
       var data;
+
+
+
+
+      var randomCountryName = "hello"
             var jsonObj = eval(Android.getChartData());
             var countryArray = [['Country','Value']];
             var i;
@@ -17,7 +40,15 @@
       function drawRegionsMap() {
 
         data = new google.visualization.arrayToDataTable(countryArray);
-
+        var x = Math.floor((Math.random() * 192) + 0);
+          var two = "2"
+          for (i = 0; i < jsonObj.length; i++)
+                    {
+                        countryArray[i+1] =[jsonObj[i].countryName,jsonObj[i].countryValue];
+                    }
+          countryArray[x+1] =[jsonObj[x].countryName,two];
+          randomCountryName = jsonObj[x].countryName;
+          var apiResponse = Android.getAPIinfo(randomCountryName);
 
         var options = {
           colorAxis: {values: [1, 2], colors: ['white', 'black'],},
@@ -46,14 +77,30 @@
           var returnValue = 'hello there';
           return(returnValue);
 }
-function randomCountry() {
+
+    function randomCountry() {
+  //countryNameRandom = Android.setCountryNameRandom();
   var x = Math.floor((Math.random() * 192) + 0);
-  var two = "2"
+  var two = "2";
+  var colourCountry = Android.setCountryNameRandom();
+if(colourCountry == "Netherlands")
+    {
+        colourCountry = "NL";
+    }
   for (i = 0; i < jsonObj.length; i++)
             {
                 countryArray[i+1] =[jsonObj[i].countryName,jsonObj[i].countryValue];
             }
-  countryArray[x+1] =[jsonObj[x].countryName,two];
+  countryArray[x+1] =[colourCountry,two];
+  var randomCountryName = jsonObj[x].countryName;
+  var apiResponse = Android.getAPIinfo(randomCountryName);
+  //apiResponse = Android.getAPIinfo(randomCountryName);
+document.getElementById("apiResponse").innerHTML = apiResponse;
+  //var population = Android.setPopulation();
+  //var capital = Android.setCapital();
+  //Android.setPopulation2(population);
+  //Android.setCapital2(capital);
+
   data = new google.visualization.arrayToDataTable(countryArray);
   options = {
           colorAxis: {values: [1, 2], colors: ['white', 'black'],},
@@ -66,12 +113,20 @@ function randomCountry() {
   chart.draw(data, options);
 
 }
-    </script>
-</head>
-<body bgcolor="#42b6f5">
-<div id="geochart-colors" style="width: 600px; height: 400px;"></div>
-<div class = "text-align">
-<input type="button" class="btn" value="Random country" onclick="randomCountry()">
-</div>
-</body>
-</html>
+function randomCountryFunction(){
+    randomCountry();
+    countryInformation();
+}
+function countryInformation(){
+   var population = Android.setPopulation();
+  var capital = Android.setCapital();
+  var countryNameRandom2 = Android.setCountryNameRandom2();
+  //Android.setPopulation2(population);
+  //Android.setCapital2(capital);
+  document.getElementById("DisplayCountry").innerHTML = countryNameRandom2;
+  document.getElementById("population").innerHTML = "Population: " +population;
+  document.getElementById("capital").innerHTML = "Capital: " +capital;
+
+}
+
+</script>

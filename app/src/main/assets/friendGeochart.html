@@ -1,8 +1,9 @@
 <html>
 <head>
-
+    <link id = "pagestyle" rel = "stylesheet" href = "friend.css" type = "text/css"/>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
+
       google.charts.load('upcoming', {'packages':['geochart']});
       google.charts.setOnLoadCallback(drawRegionsMap);
       var chart;
@@ -11,10 +12,24 @@
             //document.write(Android.getChartData());
             //var obj = json.parse(Android.getChartData());
             var jsonObj = eval(Android.getChartData());
+
+
+            //var number = "123";
+            //document.getElementById("friend").innerHTML = number;
+            //document.write(FriendName);
             //document.write(jsonObj[0].countryName);
             //document.write(jsonObj[0].countryValue);
             var countryArray = [['Country','Value']];
+            var count = 0;
             var i;
+            var j;
+             for (j = 0; j < jsonObj.length; j++)
+            {
+                if(jsonObj[j].countryValue == "2")
+                {
+                  count ++;
+                }
+            }
             for (i = 0; i < jsonObj.length; i++)
             {
                 //countryArray[i+1] =["\""+jsonObj[i].countryName+"\"",jsonObj[i].countryValue];
@@ -60,7 +75,29 @@
     </script>
 </head>
 <body bgcolor="#42b6f5">
+<div id="top" >
+    <h1 id = "friend"></h1>
+</div>
 <div id="geochart-colors" style="width: 600px; height: 400px;"></div>
-
+<div id="countryCount" >
+    <h1 id = "count"></h1>
+</div>
+<div class = "text-align">
+    <input type="button" class="btn" value="Remove friend" onclick="Android.removeFriend()">
+</div>
+<div id="Country" >
+    <h1 id = "DisplayCountry"></h1>
+</div>
 </body>
 </html>
+<script>
+var friendName = Android.getFriendName();
+var friendNameMap = friendName + "'s map";
+document.getElementById("friend").innerHTML = friendNameMap;
+var countriesBeen = friendName + " has visited " + count + " countries"
+if (count == 1)
+{
+  countriesBeen = friendName+  " has visited " + count + " country"
+}
+document.getElementById("count").innerHTML = countriesBeen;
+</script>

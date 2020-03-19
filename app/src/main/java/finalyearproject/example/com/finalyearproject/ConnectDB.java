@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
@@ -274,6 +275,14 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        }
+        if(task.equals("flag")) {
+            String email = params[1];
+            String name = params[2];
+            String flagUrl = params[3];
+            Bitmap bmp = null;
+
 
         }
         //test countries update end

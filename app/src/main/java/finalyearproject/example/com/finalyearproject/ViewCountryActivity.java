@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.PictureDrawable;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -20,8 +22,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import com.ahmadrosid.svgloader.SvgLoader;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,6 +34,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.RequestQueue;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.StreamEncoder;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -93,6 +100,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
         selectedValue = receivedIntent.getStringExtra("selectedValue");
         selectedNum2 = receivedIntent.getStringExtra("selectedNum");
         avatar = (ImageView) findViewById(R.id.avatar);
+        flag = (ImageView) findViewById(R.id.flag);
         //profilePicString = receivedIntent.getStringExtra("profilePicString");
         Globals g = (Globals)getApplication();
         String  data=g.getData();
@@ -100,12 +108,14 @@ public class ViewCountryActivity extends AppCompatActivity implements
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         avatar.setImageBitmap(profilePicBitmap);
+        //flag.setImageBitmap(profilePicBitmap);
         final TextView textView1 = (TextView) findViewById(R.id.textView1);
         final TextView textView2 = (TextView) findViewById(R.id.textView2);
         final TextView textView3 = (TextView) findViewById(R.id.textView3);
         final TextView textView4 = (TextView) findViewById(R.id.textView4);
         final TextView userName = (TextView) findViewById(R.id.userName);
         final TextView textViewStatus = (TextView) findViewById(R.id.textViewStatus);
+
         if(selectedNum2.equals("1"))
         {
             textViewStatus.setText("Not visited");
@@ -331,7 +341,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
                                     textView3.setText("Capital City: " + capital);
                                     //String languages = country.getString("languages");
                                     String languageName = "";
-                                    String temp ;
+                                    String temp;
                                     JSONArray languages = country.getJSONArray("languages");
                                     for (int j = 0; i < languages.length(); i++) {
                                         JSONObject row = languages.getJSONObject(i);
@@ -343,6 +353,31 @@ public class ViewCountryActivity extends AppCompatActivity implements
                                     textView4.setText("Languages: " + languageName);
                                     String flagUrl = country.getString("flag");
                                     Log.e("flagUrl", flagUrl);
+                                    String task = "flag";
+                                    ConnectDB connectDB = new ConnectDB(ViewCountryActivity.this);
+                                    connectDB.execute(task, email, name, flagUrl);
+                                    //Bitmap flagBitmap = profilePicBitmap;
+                                    Globals g = Globals.getConfig();
+                                    Bitmap flagBitmap = g.getFlagBitmap();
+                                    //Picasso.with(getApplicationContext()).load("https://restcountries.eu/data/rus.svg").into(flag);
+                                    //GlideApp.with(context).load("https://restcountries.eu/data/rus.svg").into(flag);
+                                    //Glide.with(ViewCountryActivity.this).load("http://www.clker.com/cliparts/u/Z/2/b/a/6/android-toy-h.svg").into(flag);
+                                    /*
+                                    SvgLoader.pluck()
+                                           .with(ViewCountryActivity.this)
+                                            .setPlaceHolder(R.mipmap.ic_launcher, R.mipmap.ic_launcher)
+                                            .load("http://www.clker.com/cliparts/u/Z/2/b/a/6/android-toy-h.svg", flag);
+*/
+                                    //flag.setImageBitmap(flagBitmap);
+                                    /*
+                                    ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+                                    flagBitmap.compress(Bitmap.CompressFormat.PNG,1, baos);
+                                    byte [] arr=baos.toByteArray();
+                                    String flagBitmapString=Base64.encodeToString(arr, Base64.DEFAULT);
+                                    Log.e("flagBitmap", flagBitmapString + "");
+                                    */
+
+
                                     /*
                                     Picasso picasso = Picasso.with(getApplicationContext());
                                     picasso.load(flagUrl)

@@ -3,6 +3,8 @@ package finalyearproject.example.com.finalyearproject;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -167,7 +169,11 @@ public class CountryListActivity extends AppCompatActivity {
         }
 
         ListAdapter countryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countryListData);
+
         countryList.setAdapter(countryAdapter);
+
+
+
         countryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

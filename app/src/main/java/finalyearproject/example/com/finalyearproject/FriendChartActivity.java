@@ -315,6 +315,23 @@ public class FriendChartActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
+        public String getFriendName() {
+            return friendName;
+        }
+
+        @JavascriptInterface
+        public void removeFriend()
+        {
+            Intent confirmDeleteFriendIntent = new Intent(FriendChartActivity.this, ConfirmDeleteFriendActivity.class);
+            confirmDeleteFriendIntent.putExtra("email", email);
+            confirmDeleteFriendIntent.putExtra("name", name);
+            confirmDeleteFriendIntent.putStringArrayListExtra("countries", countries);
+            confirmDeleteFriendIntent.putStringArrayListExtra("countryNames", countryNames);
+            confirmDeleteFriendIntent.putExtra("friendSelection", friendName);
+            startActivity(confirmDeleteFriendIntent);
+        }
+
+        @JavascriptInterface
         public int getNum2() {
             return num2;
         }

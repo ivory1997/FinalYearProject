@@ -76,6 +76,7 @@ public class ConnectDBPassArray extends AsyncTask<AsyncTaskParams,Void,String>{
         String urlCountryRecommender = "https://c16307271.000webhostapp.com/countryRecommender.php";
         String urlProfilePic  = "https://c16307271.000webhostapp.com/profilePic.php";
         String urlConfirmAddFriend = "https://c16307271.000webhostapp.com/confirmAddFriend.php";
+        String urlConfirmDeleteFriend = "https://c16307271.000webhostapp.com/confirmDeleteFriend.php";
         String urlViewFriendsMap = "https://c16307271.000webhostapp.com/viewFriendsMap.php";
 
         String task = params[0].task;
@@ -193,6 +194,40 @@ public class ConnectDBPassArray extends AsyncTask<AsyncTaskParams,Void,String>{
                 editor.commit();
                 String result="";
                 result = "Successfully added user " + friendName;
+                return result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        if(task.equals("confirmDeleteFriend")){
+            //String userEmail = params[1];
+            //String userName = params[2];
+            //String friendName = params[3];
+
+            try {
+                URL url = new URL(urlConfirmDeleteFriend);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream,"UTF-8");
+                BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+                String myData = URLEncoder.encode("identifier_userEmail","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_userName","UTF-8")+"="+URLEncoder.encode(name,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_friendName","UTF-8")+"="+URLEncoder.encode(friendName,"UTF-8");
+                bufferedWriter.write(myData);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                inputStream.close();
+
+                editor.putString("flag","confirmDeleteFriend");
+                editor.commit();
+                String result="";
+                result = "Successfully removed user " + friendName;
                 return result;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -376,6 +411,13 @@ public class ConnectDBPassArray extends AsyncTask<AsyncTaskParams,Void,String>{
 
         }
         else if(flag.equals("confirmAddFriend")) {
+            Toast.makeText(context,result,Toast.LENGTH_LONG).show();
+            String task = "friends";
+            ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(context);
+            AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
+            connectDBPassArray.execute(AsyncTaskParams);
+        }
+        else if(flag.equals("confirmDeleteFriend")) {
             Toast.makeText(context,result,Toast.LENGTH_LONG).show();
             String task = "friends";
             ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(context);

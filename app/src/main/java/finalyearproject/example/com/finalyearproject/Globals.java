@@ -31,9 +31,15 @@ public class Globals extends Application {
     }
     private String profilePicString  = "";
     private Bitmap profilePicBitmap;
+    private Bitmap flagBitmap;
     //private String urlProfilePic  = "https://c16307271.000webhostapp.com/profilePic.php";
     private String email = "";
     private String name = "";
+    private String population = "";
+    private String capital = "";
+    private String countryNameRandom = "Ireland";
+    private String countryNameRandom2 = "";
+
     private ArrayList<String> friendCountries = new ArrayList<>();
     private ArrayList<String> friendCountryNames = new ArrayList<>();
     //byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
@@ -59,6 +65,13 @@ public class Globals extends Application {
         return this.profilePicBitmap;
     }
 
+    public void setFlagBitmap(Bitmap fbitm){
+        this.flagBitmap = fbitm;
+    }
+    public Bitmap getFlagBitmap(){
+        return this.flagBitmap;
+    }
+
     public ArrayList<String> getFriendCountries(){
         return this.friendCountries;
     }
@@ -71,6 +84,33 @@ public class Globals extends Application {
     }
     public void setFriendCountryNames(ArrayList<String> fcn){
         this.friendCountryNames=fcn;
+    }
+
+    public void setPop(String pop){
+        this.population=pop;
+    }
+    public void setCap(String cap){
+        this.capital=cap;
+    }
+    public String getPop(){
+        return this.population;
+    }
+    public String getCap(){
+        return this.capital;
+    }
+
+    public void setCountryNameRandom(String countryNameRandom){
+        this.countryNameRandom=countryNameRandom;
+    }
+    public String getCountryNameRandom(){
+        return this.countryNameRandom;
+    }
+
+    public void setCountryNameRandom2(String countryNameRandom2){
+        this.countryNameRandom2=countryNameRandom2;
+    }
+    public String getCountryNameRandom2(){
+        return this.countryNameRandom2;
     }
 
 }
