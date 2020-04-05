@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -79,6 +80,8 @@ public class CountryListActivity extends AppCompatActivity {
         listData.add("Country List");
         listData.add("Friends List");
         listData.add("Random Country Picker");
+        listData.add("Country Recommender");
+        listData.add("Log out");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         navigationList.setAdapter(adapter);
         navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -100,9 +103,22 @@ public class CountryListActivity extends AppCompatActivity {
                         break;
                     case "Country List":
                         toastMessage("Country List");
+                        task = "countryList";
+                        Intent receivedIntent2 = getIntent();
+                        name = receivedIntent2.getStringExtra("name");
+                        email = receivedIntent2.getStringExtra("email");
+                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        Globals g2 = (Globals)getApplication();
+                        String  data2=g2.getData();
+                        profilePicString = g2.getData();
+                        ConnectDB connectDB2 = new ConnectDB(CountryListActivity.this);
+                        connectDB2.execute(task,email,name,profilePicString);
+                        /*
                         Intent listIntent = getIntent();
                         finish();
                         startActivity(listIntent);
+                        */
+
                         break;
                     case "Friends List":
                         toastMessage("Friends List");
@@ -120,6 +136,30 @@ public class CountryListActivity extends AppCompatActivity {
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
                         RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(RandomCountryIntent);
+                        break;
+                    case "Country Recommender":
+                        toastMessage("Country Recommender");
+                        //task = "recommend";
+                        //ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(ChartActivity.this);
+                        //AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
+                        //connectDBPassArray2.execute(AsyncTaskParams2);
+                        /*
+                        Intent CountryRecommenderIntent = new Intent(ChartActivity.this,CountryRecommenderActivity.class);
+                        CountryRecommenderIntent.putExtra("email",email);
+                        CountryRecommenderIntent.putExtra("name",name);
+                        CountryRecommenderIntent.putStringArrayListExtra("countries", countries);
+                        CountryRecommenderIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryRecommenderIntent);
+                        */
+
+                        break;
+                    case "Log out":
+                        toastMessage("Log out");
+                        Intent logoutIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(logoutIntent);
+                        finish();
+
                         break;
                 }
 
@@ -168,9 +208,37 @@ public class CountryListActivity extends AppCompatActivity {
             countryListData.add(selection);
         }
 
-        ListAdapter countryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countryListData);
+        ListAdapter countryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countryListData)
+        {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                //for (int i = 0; i < countries.size(); i++) {
+                    View view = super.getView(position, convertView, parent);
+                Log.e("position1", position + "");
+                Log.e("countryposition1", countries.get(position) + "");
+                    if (countries.get(position).equals("2")) {
+
+                        view.setBackgroundColor(getResources().getColor(R.color.greenList));
+                    } else {
+                        view.setBackgroundColor(getResources().getColor(R.color.redList));
+                    }
+
+                /*
+                if (position % 2 == 1) {
+                    view.setBackgroundColor(Color.BLUE);
+                } else {
+                    view.setBackgroundColor(Color.CYAN);
+                }
+                */
+
+
+                    return view;
+                }
+
+        };
 
         countryList.setAdapter(countryAdapter);
+
 
 
 
@@ -222,3 +290,4 @@ public class CountryListActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
+

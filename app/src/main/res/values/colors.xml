@@ -5,6 +5,11 @@
     <color name="colorAccent">#D81B60</color>
     <color name="Nice">#34deeb	</color>
     <color name="NiceWhite">#e2f1fb</color>
+    <color name="greenList">#62FF33</color>
+    <color name="redList">#EA2A1E</color>
+    <color name="titleBack">#1B241D</color>
+    <color name="titleBar">#2F96BD</color>
+
 
 
 </resources>

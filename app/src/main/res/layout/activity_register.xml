@@ -31,7 +31,7 @@
         android:layout_alignEnd="@+id/newPassword"
         android:layout_alignRight="@+id/newPassword"
         android:singleLine="true"
-        android:hint="Enter name"
+        android:hint="Enter username"
         android:textAlignment="center" />
 
     <EditText

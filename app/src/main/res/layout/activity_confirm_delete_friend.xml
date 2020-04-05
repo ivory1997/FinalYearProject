@@ -24,7 +24,6 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/NiceWhite"
                 android:text="Are you sure you want to remove this friend from your friends list?"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/colorPrimaryDark"

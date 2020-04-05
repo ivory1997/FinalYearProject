@@ -86,12 +86,25 @@ public class DeleteActivity extends AppCompatActivity {
                         break;
                     case "Country List":
                         toastMessage("Country List");
+                        task = "countryList";
+                        Intent receivedIntent2 = getIntent();
+                        name = receivedIntent2.getStringExtra("name");
+                        email = receivedIntent2.getStringExtra("email");
+                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        Globals g2 = (Globals)getApplication();
+                        String  data2=g2.getData();
+                        profilePicString = g2.getData();
+                        ConnectDB connectDB2 = new ConnectDB(DeleteActivity.this);
+                        connectDB2.execute(task,email,name,profilePicString);
+                        /*
                         Intent CountryListIntent = new Intent(DeleteActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
+                        */
+
                         break;
                     case "Friends List":
                         toastMessage("Friends List");

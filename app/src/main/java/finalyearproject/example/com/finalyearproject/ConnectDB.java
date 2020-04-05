@@ -230,6 +230,47 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 e.printStackTrace();
             }
         }
+        if(task.equals("countryList")) {
+            try {
+                String email = params[1];
+                String name = params[2];
+                Globals g = Globals.getConfig();
+                String profilePicString = g.getData();
+                //String profilePicString = params[3];
+                //Log.e("pictureString3", profilePicString+"");
+                URL url = new URL(urlCountries);
+                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String post_data = URLEncoder.encode("identifier_loginEmail","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"
+                        +URLEncoder.encode("identifier_loginName","UTF-8")+"="+URLEncoder.encode(name,"UTF-8");
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+                String result="";
+                result += profilePicString + ",";
+                String line="";
+                while((line = bufferedReader.readLine())!= null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                editor.putString("flag","countryList");
+                editor.commit();
+                return result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         //test countries import end
         //test countries update start
         if(task.equals("updateCountries")){
@@ -481,6 +522,46 @@ public class ConnectDB extends AsyncTask<String,Void,String> {
                 ChartIntent.putStringArrayListExtra("countries", countries);
                 ChartIntent.putStringArrayListExtra("countryNames", countryNames);
                 context.startActivity(ChartIntent);
+            }
+
+
+        }
+        else if(flag.equals("countryList"))
+        {
+            String test = "false";
+            String email = "";
+            String name = "";
+            //String profilePicString = "";
+            String[] serverResponse = result.split("[,]");
+            //String[] countries = new String[serverResponse.length];
+            ArrayList<String> countries = new ArrayList<>();
+            ArrayList<String> countryNames = new ArrayList<>();
+            //profilePicString = serverResponse[0];
+            test = serverResponse[1];
+            email = serverResponse[2];
+            name = serverResponse[3];
+
+            for(int i = 4; i < serverResponse.length; i+=2)
+            {
+                countryNames.add(serverResponse[i]);
+                countries.add(serverResponse[i+1]);
+                //countries[i] = serverResponse[i];
+
+            }
+
+            //(Globals) globals.this.getApplication()).setData(profilePicString);
+            //Globals g = (Globals).getApplication();
+            //Globals g = Globals.getConfig();
+            //g.setData(profilePicString);
+
+
+            if(test.contains("true")){
+                Intent CountryListIntent = new Intent(context,CountryListActivity.class);
+                CountryListIntent.putExtra("email",email);
+                CountryListIntent.putExtra("name",name);
+                CountryListIntent.putStringArrayListExtra("countries", countries);
+                CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
+                context.startActivity(CountryListIntent);
             }
 
 

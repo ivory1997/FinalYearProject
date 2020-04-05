@@ -1,6 +1,9 @@
 package finalyearproject.example.com.finalyearproject;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -8,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -25,6 +29,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +74,7 @@ public class ChartActivity extends AppCompatActivity {
         Globals g = (Globals)getApplication();
         String  data=g.getData();
         profilePicString = g.getData();
+        isProfilePicSet(profilePicString);
         byte [] encodeByte=Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         Log.e("pictureString4", profilePicString + "");
@@ -87,6 +94,7 @@ public class ChartActivity extends AppCompatActivity {
         listData.add("Friends List");
         listData.add("Random Country Picker");
         listData.add("Country Recommender");
+        listData.add("Log out");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         navigationList.setAdapter(adapter);
         navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -102,6 +110,18 @@ public class ChartActivity extends AppCompatActivity {
                         break;
                     case "Country List":
                         toastMessage("Country List");
+
+                        String task = "countryList";
+                        Intent receivedIntent = getIntent();
+                        name = receivedIntent.getStringExtra("name");
+                        email = receivedIntent.getStringExtra("email");
+                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        Globals g = (Globals)getApplication();
+                        String  data=g.getData();
+                        profilePicString = g.getData();
+                        ConnectDB connectDB = new ConnectDB(ChartActivity.this);
+                        connectDB.execute(task,email,name,profilePicString);
+                        /*
                         Intent CountryListIntent = new Intent(ChartActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
@@ -111,10 +131,12 @@ public class ChartActivity extends AppCompatActivity {
                         CountryListIntent.putStringArrayListExtra("countries", countries);
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
+
+                         */
                         break;
                     case "Friends List":
                         toastMessage("Friends List");
-                        String task = "friends";
+                        task = "friends";
                         String placeholder = "placeholder";
                         ConnectDBPassArray connectDBPassArray = new ConnectDBPassArray(ChartActivity.this);
                         AsyncTaskParams AsyncTaskParams = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
@@ -132,10 +154,10 @@ public class ChartActivity extends AppCompatActivity {
                         break;
                     case "Country Recommender":
                         toastMessage("Country Recommender");
-                        task = "recommend";
-                        ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(ChartActivity.this);
-                        AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
-                        connectDBPassArray2.execute(AsyncTaskParams2);
+                        //task = "recommend";
+                        //ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(ChartActivity.this);
+                        //AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
+                        //connectDBPassArray2.execute(AsyncTaskParams2);
                         /*
                         Intent CountryRecommenderIntent = new Intent(ChartActivity.this,CountryRecommenderActivity.class);
                         CountryRecommenderIntent.putExtra("email",email);
@@ -144,6 +166,14 @@ public class ChartActivity extends AppCompatActivity {
                         CountryRecommenderIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryRecommenderIntent);
                         */
+
+                        break;
+                    case "Log out":
+                        toastMessage("Log out");
+                        Intent logoutIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(logoutIntent);
+                        finish();
 
                         break;
                 }
@@ -360,6 +390,9 @@ public class ChartActivity extends AppCompatActivity {
     }
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+    public boolean isProfilePicSet(String profilePicString){
+        return !TextUtils.isEmpty(profilePicString);
     }
 
 }

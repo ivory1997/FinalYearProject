@@ -92,6 +92,7 @@ public class FriendChartActivity extends AppCompatActivity {
         listData.add("Friends List");
         listData.add("Random Country Picker");
         listData.add("Country Recommender");
+        listData.add("Log out");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         navigationList.setAdapter(adapter);
         navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -109,6 +110,17 @@ public class FriendChartActivity extends AppCompatActivity {
                         break;
                     case "Country List":
                         toastMessage("Country List");
+                        task = "countryList";
+                        Intent receivedIntent2 = getIntent();
+                        name = receivedIntent2.getStringExtra("name");
+                        email = receivedIntent2.getStringExtra("email");
+                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        Globals g2 = (Globals)getApplication();
+                        String  data2=g2.getData();
+                        profilePicString = g2.getData();
+                        ConnectDB connectDB2 = new ConnectDB(FriendChartActivity.this);
+                        connectDB2.execute(task,email,name,profilePicString);
+                        /*
                         Intent CountryListIntent = new Intent(FriendChartActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
@@ -118,6 +130,8 @@ public class FriendChartActivity extends AppCompatActivity {
                         CountryListIntent.putStringArrayListExtra("countries", countries);
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
+                        */
+
                         break;
                     case "Friends List":
                         toastMessage("Friends List");
@@ -139,10 +153,10 @@ public class FriendChartActivity extends AppCompatActivity {
                         break;
                     case "Country Recommender":
                         toastMessage("Country Recommender");
-                        task = "recommend";
-                        ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(FriendChartActivity.this);
-                        AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
-                        connectDBPassArray2.execute(AsyncTaskParams2);
+                        //task = "recommend";
+                        //ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(FriendChartActivity.this);
+                        //AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
+                        //connectDBPassArray2.execute(AsyncTaskParams2);
                         /*
                         Intent CountryRecommenderIntent = new Intent(ChartActivity.this,CountryRecommenderActivity.class);
                         CountryRecommenderIntent.putExtra("email",email);
@@ -151,6 +165,14 @@ public class FriendChartActivity extends AppCompatActivity {
                         CountryRecommenderIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryRecommenderIntent);
                         */
+
+                        break;
+                    case "Log out":
+                        toastMessage("Log out");
+                        Intent logoutIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(logoutIntent);
+                        finish();
 
                         break;
                 }

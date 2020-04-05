@@ -113,6 +113,7 @@ public class ViewCountryActivity extends AppCompatActivity implements
         final TextView textView2 = (TextView) findViewById(R.id.textView2);
         final TextView textView3 = (TextView) findViewById(R.id.textView3);
         final TextView textView4 = (TextView) findViewById(R.id.textView4);
+        final TextView textView5 = (TextView) findViewById(R.id.textView5);
         final TextView userName = (TextView) findViewById(R.id.userName);
         final TextView textViewStatus = (TextView) findViewById(R.id.textViewStatus);
 
@@ -351,6 +352,16 @@ public class ViewCountryActivity extends AppCompatActivity implements
                                     languageName = languageName.substring(1);
                                     //String languageName = languages.getString("name");
                                     textView4.setText("Languages: " + languageName);
+                                    String currencyName = "";
+
+                                    JSONArray currencies = country.getJSONArray("currencies");
+                                    for (int k = 0; k < currencies.length(); k++) {
+                                        JSONObject rowCurrency = currencies.getJSONObject(k);
+                                        temp = rowCurrency.getString("name");
+                                        currencyName = currencyName + "," + temp;
+                                    }
+                                    currencyName = currencyName.substring(1);
+                                    textView5.setText("Currencies: " + currencyName);
                                     String flagUrl = country.getString("flag");
                                     Log.e("flagUrl", flagUrl);
                                     String task = "flag";
@@ -474,12 +485,25 @@ public class ViewCountryActivity extends AppCompatActivity implements
                         break;
                     case "Country List":
                         toastMessage("Country List");
+                        task = "countryList";
+                        Intent receivedIntent2 = getIntent();
+                        name = receivedIntent2.getStringExtra("name");
+                        email = receivedIntent2.getStringExtra("email");
+                        //profilePicString = receivedIntent.getStringExtra("profilePicString");
+                        Globals g2 = (Globals)getApplication();
+                        String  data2=g2.getData();
+                        profilePicString = g2.getData();
+                        ConnectDB connectDB2 = new ConnectDB(ViewCountryActivity.this);
+                        connectDB2.execute(task,email,name,profilePicString);
+                        /*
                         Intent CountryListIntent = new Intent(ViewCountryActivity.this,CountryListActivity.class);
                         CountryListIntent.putExtra("email",email);
                         CountryListIntent.putExtra("name",name);
                         CountryListIntent.putStringArrayListExtra("countries", countries);
                         CountryListIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(CountryListIntent);
+                        */
+
                     break;
                     case "Friends List":
                         toastMessage("Friends List");
