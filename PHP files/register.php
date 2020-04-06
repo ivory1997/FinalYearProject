@@ -6,6 +6,11 @@ $user_pass = $_POST["identifier_password"];
 $user_name = $_POST["identifier_name"];
 $picture = $_POST["profile_picture"];
 
+$mysql_query2 = "SELECT * FROM users WHERE email = '$user_email'";
+$mysql_query3 = "SELECT * FROM users WHERE name = '$user_name'";
+$result2 = mysqli_query($conn,$mysql_query2);
+$result3 = mysqli_query($conn,$mysql_query3);
+
 $query = "INSERT INTO users(email,password,name,picture) VALUES ('$user_email','$user_pass','$user_name','$picture')";
 $query2 = "INSERT INTO countries(email,
 Ireland,
@@ -204,6 +209,9 @@ United_Kingdom,
 United_States,
 Unknown_region
 ) VALUES ('$user_email',1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)";
+
+if(mysqli_num_rows($result2) == 0 && mysqli_num_rows($result3) == 0)
+{
 if(mysqli_query($conn,$query)){
 	echo "<h2>Data Successfully Inserted!</h2>";
 }
@@ -215,6 +223,7 @@ if(mysqli_query($conn,$query2)){
 }
 else{
 	echo "<h2>Data was unable to be inserted into database :(.</h2>";
+}
 }
 ?>
 
