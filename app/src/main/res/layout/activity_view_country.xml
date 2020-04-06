@@ -23,6 +23,7 @@
             android:textSize="30sp" />
         <!-- android:background="@color/NiceWhite"/> -->
 
+
         <ImageView
             android:id="@+id/flag"
             android:layout_width="50dp"
