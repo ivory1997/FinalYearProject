@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -58,6 +59,7 @@ public class ViewProfile extends AppCompatActivity {
         Globals g = (Globals)getApplication();
         String  data=g.getData();
         profilePicString = g.getData();
+        isProfilePicSet(profilePicString);
         byte [] encodeByte= Base64.decode(profilePicString, Base64.DEFAULT);
         profilePicBitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         Log.e("pictureString4", profilePicString + "");
@@ -226,6 +228,9 @@ public class ViewProfile extends AppCompatActivity {
 
     private void toastMessage(String message){
         Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
+    }
+    public boolean isProfilePicSet(String profilePicString){
+        return !TextUtils.isEmpty(profilePicString);
     }
 
 

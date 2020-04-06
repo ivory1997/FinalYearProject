@@ -19,7 +19,7 @@
             android:layout_centerHorizontal="true"
             android:text="Country"
 
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/NiceWhite"
             android:textSize="30sp" />
         <!-- android:background="@color/NiceWhite"/> -->
 

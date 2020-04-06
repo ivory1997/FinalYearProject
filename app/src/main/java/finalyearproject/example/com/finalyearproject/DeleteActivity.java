@@ -69,6 +69,8 @@ public class DeleteActivity extends AppCompatActivity {
         listData.add("Country List");
         listData.add("Friends List");
         listData.add("Random Country Picker");
+        listData.add("Country Recommender");
+        listData.add("Log out");
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         navigationList.setAdapter(adapter);
         navigationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,6 +123,30 @@ public class DeleteActivity extends AppCompatActivity {
                         RandomCountryIntent.putStringArrayListExtra("countries", countries);
                         RandomCountryIntent.putStringArrayListExtra("countryNames", countryNames);
                         startActivity(RandomCountryIntent);
+                        break;
+                    case "Country Recommender":
+                        toastMessage("Country Recommender");
+                        //task = "recommend";
+                        //ConnectDBPassArray connectDBPassArray2 = new ConnectDBPassArray(ChartActivity.this);
+                        //AsyncTaskParams AsyncTaskParams2 = new AsyncTaskParams(task,email,name,profilePicString,countries,countryNames);
+                        //connectDBPassArray2.execute(AsyncTaskParams2);
+                        /*
+                        Intent CountryRecommenderIntent = new Intent(ChartActivity.this,CountryRecommenderActivity.class);
+                        CountryRecommenderIntent.putExtra("email",email);
+                        CountryRecommenderIntent.putExtra("name",name);
+                        CountryRecommenderIntent.putStringArrayListExtra("countries", countries);
+                        CountryRecommenderIntent.putStringArrayListExtra("countryNames", countryNames);
+                        startActivity(CountryRecommenderIntent);
+                        */
+
+                        break;
+                    case "Log out":
+                        toastMessage("Log out");
+                        Intent logoutIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(logoutIntent);
+                        finish();
+
                         break;
                 }
 
